@@ -18,6 +18,7 @@
         "build": true
     },
     "cmake.preferredGenerators": [
+        "Unix Makefiles",
         "Visual Studio 15 2017 Win64"
     ],
     "files.associations": {
