@@ -30,5 +30,7 @@
 *.exe
 *.out
 *.app
+
 .vscode/.cmaketools.json
 build/*
+bin/*
