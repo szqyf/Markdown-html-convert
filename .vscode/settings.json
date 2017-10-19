@@ -21,6 +21,7 @@
         "Unix Makefiles",
         "NMake Makefiles"
     ],
+    "C_Cpp.clang_format_style": " {BasedOnStyle: LLVM, IndentWidth: 4} ",
     "files.associations": {
         "cmath": "cpp",
         "cstddef": "cpp",
