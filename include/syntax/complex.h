@@ -2,11 +2,10 @@
 
 #include <syntax.h>
 
-namespace md {
+namespace ts {
 namespace syntax {
 class Complex : public Syntax {
-public:
-    
+   public:
 };
 }
 }

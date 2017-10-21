@@ -1,13 +1,13 @@
-#include <common.h>
+#include <translator.h>
 #include <iostream>
 
 int main() {
-    auto gfm = md::make_parser("gfm");
-    auto html = md::make_render("html");
+    auto gfm = ts::make_parser("gfm");
+    auto html = ts::make_render("html");
     const std::istream &in = std::cin;
 
     {  //一行行读取并输出
-        auto token = md::make_root_token();
+        auto token = ts::make_root_token();
         while (!in.eof()) {
             auto line = gfm->parse_line(in, token);
             auto str = html->render(line);

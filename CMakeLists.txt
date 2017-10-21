@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
-set (project_name md2html)
+set (project_name translator)
 project (${project_name} CXX)
 
 include_directories(include)

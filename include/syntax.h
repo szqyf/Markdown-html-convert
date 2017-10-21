@@ -5,7 +5,7 @@
 #include <vector>
 #include "noncopyable.h"
 
-namespace md {
+namespace ts {
 class Token;
 class Syntax : private noncopyable {
    public:

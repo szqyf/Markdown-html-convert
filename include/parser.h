@@ -8,7 +8,7 @@
 #include "syntax.h"
 #include "token.h"
 
-namespace md {
+namespace ts {
 class Parser : private noncopyable {
    public:
     virtual std::shared_ptr<Token> parse(std::string text) = 0;

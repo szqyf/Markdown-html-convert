@@ -4,7 +4,7 @@
 #include <string>
 #include "token.h"
 
-namespace md {
+namespace ts {
 class Render {
    public:
     std::string render(std::shared_ptr<Token> root);

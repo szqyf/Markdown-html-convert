@@ -1,4 +1,4 @@
 #include <syntax.h>
 
-namespace md {
+namespace ts {
 }
