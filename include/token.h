@@ -1,15 +1,15 @@
 #pragma once
 
-#include "noncopyable.h"
 #include <memory>
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include "noncopyable.h"
 
 namespace md {
 class Syntax;
 class Token : private noncopyable {
-  public:
+   public:
     /**
      * @brief 获取类型的唯一描述，可以从配置文件中获取
      *
@@ -23,13 +23,16 @@ class Token : private noncopyable {
      * @return std::unordered_map<std::string, std::string>
      */
     const std::unordered_map<std::string, std::string> &properties() const {
-        return properties;
+        return properties_;
     }
 
-  private:
+   private:
     std::string tag_;
     std::unordered_map<std::string, std::string> properties_;
     std::shared_ptr<Token> parent_;
     std::vector<std::shared_ptr<Token>> children_;
+
+   public:
+    static std::shared_ptr<Token> make_root();
 };
 }

@@ -21,7 +21,7 @@
         "Unix Makefiles",
         "NMake Makefiles"
     ],
-    "C_Cpp.clang_format_style": " {BasedOnStyle: LLVM, IndentWidth: 4} ",
+    "C_Cpp.clang_format_style": " {BasedOnStyle: Google, IndentWidth: 4 } ",
     "files.associations": {
         "cmath": "cpp",
         "cstddef": "cpp",
@@ -54,6 +54,14 @@
         "xstddef": "cpp",
         "xstring": "cpp",
         "xtr1common": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "list": "cpp",
+        "memory": "cpp",
+        "string": "cpp",
+        "tuple": "cpp",
+        "unordered_map": "cpp",
+        "vector": "cpp",
+        "xhash": "cpp",
+        "xmemory": "cpp"
     }
 }
