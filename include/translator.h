@@ -5,7 +5,7 @@
 #include "parser.h"
 #include "render.h"
 #include "syntax.h"
-#include "syntax/complex.h"
+#include "syntax/block.h"
 #include "token.h"
 
 namespace ts {

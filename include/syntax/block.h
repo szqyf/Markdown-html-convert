@@ -4,7 +4,7 @@
 
 namespace ts {
 namespace syntax {
-class Complex : public Syntax {
+class Block : public Syntax {
    public:
 };
 }
