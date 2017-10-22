@@ -11,11 +11,9 @@ class Syntax : private noncopyable {
    public:
     virtual bool matched(std::string buf) = 0;
 
-    virtual std::shared_ptr<Token> parse(const std::shared_ptr<Token> prev,
+    virtual std::shared_ptr<Token> parse(const std::unique_ptr<Token> &prev,
                                          std::string buf,
                                          std::istream &stream) = 0;
-    virtual std::shared_ptr<Token> parse(std::istream &stream) = 0;
-    virtual std::shared_ptr<Token> parse(std::string buf) = 0;
 
    protected:
     std::vector<std::string> startsWith_;

@@ -7,6 +7,6 @@
 namespace ts {
 class Render {
    public:
-    std::string render(std::shared_ptr<Token> root);
+    std::string render(const std::unique_ptr<Token> &root);
 };
 }

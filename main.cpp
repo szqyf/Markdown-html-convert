@@ -7,16 +7,15 @@ int main() {
     const std::istream &in = std::cin;
 
     {  //一行行读取并输出
-        auto token = ts::make_root_token();
+        auto token = ts::make_root();
         while (!in.eof()) {
             auto line = gfm->parse_line(in, token);
-            auto str = html->render(line);
-            std::cout << str << std::endl;
+            std::cout << html->render(line) << std::endl;
         }
     }
 
     {  //全部读取并输出
-        auto tk = gfm->parse(in);
-        std::cout << html->render(tk) << std::endl;
+        auto token = gfm->parse(in);
+        std::cout << html->render(token) << std::endl;
     }
 }
