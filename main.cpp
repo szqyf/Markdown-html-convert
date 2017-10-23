@@ -3,7 +3,7 @@
 
 int main() {
     const std::istream &in = std::cin;
-    const std::ostream &out = std::cout;
+    std::ostream &out = std::cout;
 
     auto gfm = ts::make_parser("gfm", in);
     auto html = ts::make_render("html", out);

@@ -1,11 +1,11 @@
 #include <translator.h>
 #include <exception>
-#include <strstream>
+#include <sstream>
 #include "gfm/module.h"
 
 namespace ts {
 std::shared_ptr<Parser> make_parser(std::string what, const std::string str) {
-    return make_parser(what, std::istrstream(str));
+    return make_parser(what, std::istringstream(str));
 }
 
 std::shared_ptr<Parser> make_parser(std::string what, const std::istream &in) {
