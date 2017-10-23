@@ -2,11 +2,14 @@
 
 #include <memory>
 #include <string>
-#include "token.h"
+#include "tag.h"
 
 namespace ts {
-class Render {
+class IRender {
    public:
-    std::string render(const std::unique_ptr<Token> &root);
+    virtual std::string render(const TagPtr &root) = 0;
+
+   public:
+    virtual ~IRender() {}
 };
 }
