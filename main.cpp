@@ -2,23 +2,26 @@
 #include <iostream>
 
 int main() {
-    auto gfm = ts::make_parser("gfm");
-    auto html = ts::make_render("html");
     const std::istream &in = std::cin;
+    const std::ostream &out = std::cout;
+
+    auto gfm = ts::make_parser("gfm", in);
+    auto html = ts::make_render("html", out);
 
     {  //一行行读取并输出
         // auto tag = ts::make_root();
-        while (!in.eof()) {
-            auto line = gfm->parse_line(in);
-            std::cout << html->render(line) << std::endl;
-        }
+        ts::AstNode line;
+        do {
+            line = gfm->parse_line();
+            html->render(line);
+        } while (line != nullptr);
 
-        std::cout << "Whole Html is: " << std::endl
-                  << html->render(gfm->document()) << std::endl;
+        std::cout << "Whole Html is: " << std::endl;
+        html->render(gfm->document());
     }
 
     {  //全部读取并输出
-        auto tag = gfm->parse(in);
-        std::cout << html->render(tag) << std::endl;
+        auto tag = gfm->parse();
+        html->render(tag);
     }
 }

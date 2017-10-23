@@ -5,27 +5,26 @@
 #include <string>
 #include <vector>
 #include "noncopyable.h"
-#include "tag.h"
+#include "ast.h"
 
 namespace ts {
 class Parser : private noncopyable {
    public:
-    virtual TagPtr parse(std::string text) = 0;
-    virtual TagPtr parse(const std::istream &stream) = 0;
+    virtual AstNode parse() = 0;
 
-    virtual TagPtr parse_line(std::string text) = 0;
-    virtual TagPtr parse_line(const std::istream &stream) = 0;
+    virtual AstNode parse_line() = 0;
 
    public:
-    const TagPtr document() const { return root_; }
+    const AstNode document() const { return root_; }
 
    protected:
-    TagPtr root_;
+    AstNode root_;
+    const std::istream &in_;
 
-    // virtual TagPtr parse_word(std::string text) = 0;
+    // virtual AstNode parse_word(std::string text) = 0;
 
    public:
-    Parser() : root_(Tag::make_root()) {}
+    Parser(const std::istream &in) : root_(Ast::make_root()), in_(in) {}
     virtual ~Parser() {}
 };
 }

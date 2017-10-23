@@ -1,5 +1,5 @@
-#include <tag.h>
+#include <ast.h>
 
 namespace ts {
-const std::string Tag::Root = "root";
+const std::string Ast::Root = "root";
 }

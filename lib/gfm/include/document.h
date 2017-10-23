@@ -5,15 +5,11 @@
 namespace gfm {
 class Document : public ts::Parser {
    public:
-    virtual ts::TagPtr parse(std::string text) { return nullptr; }
-    virtual ts::TagPtr parse(const std::istream &stream) { return nullptr; }
+    virtual ts::AstNode parse() { return root_; }
 
-    virtual ts::TagPtr parse_line(std::string text) { return nullptr; }
-    virtual ts::TagPtr parse_line(const std::istream &stream) {
-        return nullptr;
-    }
+    virtual ts::AstNode parse_line() { return nullptr; }
 
    public:
-    Document() {}
+    Document(const std::istream &in) : ts::Parser(in) {}
 };
 }
