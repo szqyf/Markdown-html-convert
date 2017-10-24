@@ -12,7 +12,7 @@ class Document : public ts::IParser {
     const ts::AstNode document() const override;
 
    private:
-    AstNode document_;
+    ts::AstNode document_;
 
    public:
     Document(ts::AstNode node = nullptr);
