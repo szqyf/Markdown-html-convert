@@ -6,9 +6,9 @@ AstNode Document::from(std::istream &in) { return nullptr; }
 
 AstNode Document::parse_line_from(std::istream &in) { return nullptr; }
 
-const AstNode Document::document() { return document_; }
+const AstNode Document::document() const { return document_; }
 
 Document::Document(AstNode node) : document_(node) {
-    if (node == nullptr) document = node_;
+    if (node == nullptr) document_ = node;
 }
 }

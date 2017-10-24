@@ -31,4 +31,10 @@ std::istream& operator>>(std::istream& in, std::shared_ptr<IParser> parser) {
     if (parser != nullptr) parser->from(in);
     return in;
 }
+
+std::ostream& operator<<(std::ostream& out, std::shared_ptr<IParser> parser) {
+    if (parser != nullptr) return out << parser->document();
+
+    return out;
+}
 }
