@@ -5,9 +5,9 @@ convert markerdown to html
 1. 有三个基类：
     * Syntax  
     语法类：尝试提炼语法的共同点，看是否能使用共同的基类来展示，考虑从配置文件中获取；
-    * Parser  
+    * IParser  
     解析类：解析文本，生成Syntax树；
-    * Render  
+    * IRender  
     渲染类：实现将Syntax树重新生成文本，可考虑从配置文件中获取生成方式。
 
 2. Parser类，按字符读取数据并投入现有的vector<Syntax>中进行判断？还是按行读取投入？  

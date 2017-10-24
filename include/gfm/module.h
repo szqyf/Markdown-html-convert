@@ -7,7 +7,11 @@
 
 namespace gfm {
 inline bool match(std::string name) { return true; }
-inline std::shared_ptr<ts::Parser> make_parser(const std::istream &in) {
-    return std::make_shared<Document>(in);
-}
+
+inline bool has_parser() { return true; }
+
+inline bool has_render() { return false; }
+
+inline std::shared_ptr<ts::IParser> make_parser() {
+    return std::make_shared<Document>();
 }

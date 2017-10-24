@@ -4,17 +4,31 @@
 #include "gfm/module.h"
 
 namespace ts {
-std::shared_ptr<Parser> make_parser(std::string what, const std::string str) {
-    return make_parser(what, std::istringstream(str));
-}
+static std::shared_ptr<IRender>* defaultRender{nullptr};
 
-std::shared_ptr<Parser> make_parser(std::string what, const std::istream &in) {
-    if (gfm::match(what)) return gfm::make_parser(in);
+std::shared_ptr<IParser> make_parser(std::string what) {
+    if (gfm::match(what) && gfm::has_parser()) return gfm::make_parser();
 
     throw std::runtime_error("make parser error");
 }
 
-std::shared_ptr<IRender> make_render(std::string what, std::ostream &out) {
-    return nullptr;
+std::shared_ptr<IRender> make_render(std::string what) {
+    if (gfm::match(what) && gfm::has_render()) return gfm::make_render();
+
+    throw std::runtime_error("make render error");
+}
+
+void set_default_render(std::shared_ptr<IRender> render) {
+    if (render != nullptr) defaultRender = &render;
+}
+
+std::ostream& operator<<(std::ostream& out, AstNode node) {
+    if (defaultRender != nullptr) out << (*defaultRender)->render(node);
+    return out;
+}
+
+std::istream& operator>>(std::istream& in, std::shared_ptr<IParser> parser) {
+    if (parser != nullptr) parser->from(in);
+    return in;
 }
 }

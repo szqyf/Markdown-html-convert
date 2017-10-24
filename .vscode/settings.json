@@ -64,6 +64,10 @@
         "vector": "cpp",
         "xhash": "cpp",
         "xmemory": "cpp",
-        "strstream": "cpp"
+        "strstream": "cpp",
+        "cctype": "cpp",
+        "functional": "cpp",
+        "sstream": "cpp",
+        "xfunctional": "cpp"
     }
 }

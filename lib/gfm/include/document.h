@@ -3,13 +3,18 @@
 #include <parser.h>
 
 namespace gfm {
-class Document : public ts::Parser {
+class Document : public ts::IParser {
    public:
-    virtual ts::AstNode parse() { return root_; }
+    ts::AstNode from(std::istream &in) override;
 
-    virtual ts::AstNode parse_line() { return nullptr; }
+    ts::AstNode parse_line_from(std::istream &in) override;
+
+    const ts::AstNode document() const override;
+
+   private:
+    AstNode document_;
 
    public:
-    Document(const std::istream &in) : ts::Parser(in) {}
+    Document(ts::AstNode node = nullptr);
 };
 }
