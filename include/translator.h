@@ -1,15 +1,17 @@
 #pragma once
 
+#include <iostream>
 #include <memory>
 #include <string>
+#include "ast.h"
 #include "parser.h"
 #include "render.h"
-#include "syntax.h"
-#include "syntax/complex.h"
-#include "token.h"
 
 namespace ts {
-std::shared_ptr<Parser> make_parser(std::string what);
-std::shared_ptr<Render> make_render(std::string what);
-std::shared_ptr<Token> make_root_token();
+std::shared_ptr<IParser> make_parser(std::string what);
+std::shared_ptr<IRender> make_render(std::string what);
+void set_default_render(std::shared_ptr<IRender> render);
+
+std::ostream& operator<<(std::ostream& out, AstNode node);
+std::istream& operator>>(std::istream& in, std::shared_ptr<IParser> parser);
 }

@@ -2,11 +2,14 @@
 
 #include <memory>
 #include <string>
-#include "token.h"
+#include "ast.h"
 
 namespace ts {
-class Render {
+class IRender {
    public:
-    std::string render(std::shared_ptr<Token> root);
+    virtual std::string render(const AstNode &root) = 0;
+
+   public:
+    virtual ~IRender() {}
 };
 }
