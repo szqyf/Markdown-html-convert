@@ -2,8 +2,8 @@
 #include <iostream>
 
 int main() {
-    std::istream &in = std::cin;
-    std::ostream &out = std::cout;
+    auto &in = std::cin;
+    auto &out = std::cout;
 
     auto gfm = ts::make_parser("gfm");
     auto html = ts::make_render("html");
