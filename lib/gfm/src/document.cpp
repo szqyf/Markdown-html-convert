@@ -27,21 +27,10 @@ const AstNode &Document::from(std::istream &in) {
     // document_->reset();
     reset_ast(document_);
     auto node = append_ast(document_, "p");
+    auto &parent = document_;
 
     while (!in.eof()) {
         bool fol = true;  // first of line
-
-        {
-            buf = read(in, [](char ch) {
-                return ch < 0 || std::isalpha(ch) || std::isdigit(ch);
-            });
-
-            if (!buf.empty()) {
-                fol = false;
-                append_ast(node, "text", buf);
-                // node->text += buf;
-            }
-        }
 
         {
             buf = read(in, [](char ch) { return std::isblank(ch); });
@@ -51,7 +40,7 @@ const AstNode &Document::from(std::istream &in) {
             if (!buf.empty() && fol &&
                 (size >= 4 || *b == '\t')) {  //行首是4个空格或者是tab
                 fol = false;
-                node = append_ast(node, "codeblock");
+                node = append_ast(parent, "codeblock");
                 // todo: parse code block here
             } else if (!fol || (size >= 4 || *b == '\t')) {
                 append_ast(node, "text", buf);
@@ -62,6 +51,24 @@ const AstNode &Document::from(std::istream &in) {
                     (next == 13 || next == 10)) {  //行末超过两个空格
                     append_ast(node, "br");
                 }
+            } else if (fol) {
+                int next = in.peek();
+
+                if (next == 13 || next == 10) {  //空行
+                    node = append_ast(node, "p");
+                }
+            }
+        }
+
+        {
+            buf = read(in, [](char ch) {
+                return ch < 0 || std::isalpha(ch) || std::isdigit(ch);
+            });
+
+            if (!buf.empty()) {
+                fol = false;
+                append_ast(node, "text", buf);
+                // node->text += buf;
             }
         }
 
