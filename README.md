@@ -4,7 +4,7 @@ convert markerdown to html
 ## 目前主要设计想法：
 1. 分三个模块：
 - Main 主控模块，负责CLI的接入，生成对应的Parser和Render来完成工作
-_ GFM 模块，提供GitHub Flavored Markdown语言的Parser和Render(暂未安排)
+- GFM 模块，提供GitHub Flavored Markdown语言的Parser和Render(暂未安排)
 - HTML 模块，提供HTML语言的Parser(暂未安排)和Parser
 
 2. 类结构：
