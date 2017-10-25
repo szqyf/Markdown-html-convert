@@ -22,7 +22,7 @@ std::string read(std::istream &in, read_f reader) {
     return buf;
 }
 
-const AstNode Document::from(std::istream &in) {
+const AstNode &Document::from(std::istream &in) {
     std::string buf;
     // document_->reset();
     reset_ast(document_);
@@ -52,7 +52,7 @@ const AstNode Document::from(std::istream &in) {
                 (size >= 4 || *b == '\t')) {  //行首是4个空格或者是tab
                 fol = false;
                 node = append_ast(node, "codeblock");
-                //todo: parse code block here
+                // todo: parse code block here
             } else if (!fol || (size >= 4 || *b == '\t')) {
                 append_ast(node, "text", buf);
 
@@ -67,14 +67,19 @@ const AstNode Document::from(std::istream &in) {
 
         {
             buf = read(in, [](char ch) { return std::ispunct(ch); });
-            std::string header[]{"#", "##", "###", "####", "#####", "#######"};
-            auto find = std::find(std::begin(header), std::end(header), buf);
 
-            if (find != std::end(header)) {
-                auto pos = std::distance(find, std::begin(header));
-                auto h = append_ast(node, "h");
-                set_ast_extending(h, {"level", std::to_string(pos)});
-                //todo: find text and continue set extendings here
+            if (fol) {
+                std::string header[]{"#",    "##",    "###",
+                                     "####", "#####", "#######"};
+                auto find =
+                    std::find(std::begin(header), std::end(header), buf);
+
+                if (find != std::end(header)) {
+                    auto pos = std::distance(find, std::begin(header));
+                    auto h = append_ast(node, "h");
+                    set_ast_extending(h, {"level", std::to_string(pos)});
+                    // todo: find text and continue set extendings here
+                }
             }
         }
 

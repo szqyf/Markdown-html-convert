@@ -2,38 +2,27 @@
 convert markerdown to html
 
 ## 目前主要设计想法：
-1. 有三个基类：
-    * Syntax  
-    语法类：尝试提炼语法的共同点，看是否能使用共同的基类来展示，考虑从配置文件中获取；
-    * IParser  
-    解析类：解析文本，生成Syntax树；
-    * IRender  
-    渲染类：实现将Syntax树重新生成文本，可考虑从配置文件中获取生成方式。
+1. 分三个模块：
+- Main 主控模块，负责CLI的接入，生成对应的Parser和Render来完成工作
+_ GFM 模块，提供GitHub Flavored Markdown语言的Parser和Render(暂未安排)
+- HTML 模块，提供HTML语言的Parser(暂未安排)和Parser
 
-2. Parser类，按字符读取数据并投入现有的vector<Syntax>中进行判断？还是按行读取投入？  
-    伪代码如下：
-    ```c++
-    static const vector<Syntax> Syntaxes;
+2. 类结构：
+- IParser 解析接口
+```c++    
+    const AstNode &from(std::istream &in);
+    const AstNode parse_from_line(std::stream &in);
+    const AstNode document() const;
+```
 
-    tree<Token> read_from_stream(stream s) {
-        string buff = "";
-        char ch;
-        tree ret;
+- IRender 渲染接口（暂未定义）
 
-        while ((ch = s.read()) != eof) {
-            buff += ch;
+- Ast 数据节点交换类  
+  包含 AstNode = std::shared_ptr<Ast>  
+       Asts = std::vector<AstNode>  
+  两类
 
-            for (auto syn: Syntaxes) {
-                if (syn.is(buff)) {
-                    ret.add_leaf(syn.handle_stream(buff, s));
-                    buff = "";
-                    break;
-                }
-            }
-        }
-
-        return std::move(ret);
-    }
-    ```
-
-3. 
+3. 一些辅助函数：
+- ts::make_parser 生成解析实体
+- ts::make_render 生成渲染实体
+- 重载 << >> 符号，实现istream, ostream 流的操作

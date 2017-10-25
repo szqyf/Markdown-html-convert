@@ -8,7 +8,7 @@
 namespace ts {
 class IParser : private noncopyable {
    public:
-    virtual const AstNode from(std::istream &in) = 0;
+    virtual const AstNode &from(std::istream &in) = 0;
 
     virtual const AstNode parse_line_from(std::istream &in) = 0;
 
