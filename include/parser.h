@@ -33,7 +33,7 @@ class IParser : private noncopyable {
     AstNode &set_ast_extending(AstNode &node,
                                std::pair<std::string, std::string> value) {
         node->extendings_.insert(value);
-        return node;//测试
+        return node;
     }
 };
 }
