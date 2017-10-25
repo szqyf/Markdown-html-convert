@@ -18,8 +18,8 @@ _ GFM 模块，提供GitHub Flavored Markdown语言的Parser和Render(暂未安�
 - IRender 渲染接口（暂未定义）
 
 - Ast 数据节点交换类  
-  包含 AstNode = std::shared_ptr<Ast>  
-       Asts = std::vector<AstNode>  
+  包含 AstNode = std::shared_ptr\<Ast>  
+       Asts = std::vector\<AstNode>  
   两类
 
 3. 一些辅助函数：
