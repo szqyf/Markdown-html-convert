@@ -22,30 +22,69 @@ std::string read(std::istream &in, read_f reader) {
     return buf;
 }
 
-AstNode Document::from(std::istream &in) {
+const AstNode Document::from(std::istream &in) {
     std::string buf;
-    document_->clear();
+    // document_->reset();
+    reset_ast(document_);
+    node = append_ast(document_, "p");
 
     while (!in.eof()) {
-        AstNode node;
+        bool fol = true;  // first of line
 
-        buf = read(in, [](char ch) {
-            return ch < 0 || std::isalpha(ch) || std::isdigit(ch);
-        });
+        {
+            buf = read(in, [](char ch) {
+                return ch < 0 || std::isalpha(ch) || std::isdigit(ch);
+            });
 
-        if (!buf.empty())
-            node = Ast::make("p", text);
+            if (!buf.empty()) {
+                fol = false;
+                append_ast(node, "text", buf);
+                // node->text += buf;
+            }
+        }
 
-        buf = read(in, [](char ch) { return std::isblank(ch); });
+        {
+            buf = read(in, [](char ch) { return std::isblank(ch); });
+            auto b = buf.begin();
+            auto size = buf.size();
 
-        if (!buf.empty())
-            
+            if (!buf.empty() && fol &&
+                (size >= 4 || *b == '\t')) {  //行首是4个空格或者是tab
+                fol = false;
+                node = append_ast(node, "codeblock");
+                //todo: parse code block here
+            } else if (!fol || (size >= 4 || *b == '\t')) {
+                append_ast(node, "text", buf);
+
+                int next = in.peek();
+
+                if (size >= 2 &&
+                    (next == 13 || next == 10)) {  //行末超过两个空格
+                    append_ast(node, "br");
+                }
+            }
+        }
+
+        {
+            buf = read(in, [](char ch) { return std::ispunct(ch); });
+            std::string header[]{"#", "##", "###", "####", "#####", "#######"};
+            auto find = std::find(std::begin(header), std::end(header), buf);
+
+            if (find != std::end(header)) {
+                auto pos = std::distance(find, std::begin(header));
+                auto h = append_ast(node, "h");
+                set_ast_extending(h, {"level", std::to_string(pos)});
+                //todo: find text and continue set extendings here
+            }
+        }
+
+        buf = read(in, [](char ch) { return ch == '\n' || ch == '\r'; });
     }
 
     return document_;
 }
 
-AstNode Document::parse_line_from(std::istream &in) { return nullptr; }
+const AstNode Document::parse_line_from(std::istream &in) { return nullptr; }
 
 const AstNode Document::document() const { return document_; }
 

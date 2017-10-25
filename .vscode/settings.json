@@ -68,6 +68,7 @@
         "cctype": "cpp",
         "functional": "cpp",
         "sstream": "cpp",
-        "xfunctional": "cpp"
+        "xfunctional": "cpp",
+        "algorithm": "cpp"
     }
 }
