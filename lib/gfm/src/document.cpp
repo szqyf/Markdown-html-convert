@@ -26,7 +26,7 @@ const AstNode &Document::from(std::istream &in) {
     std::string buf;
     // document_->reset();
     reset_ast(document_);
-    node = append_ast(document_, "p");
+    auto node = append_ast(document_, "p");
 
     while (!in.eof()) {
         bool fol = true;  // first of line
