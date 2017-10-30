@@ -20,7 +20,9 @@ class IParser : private noncopyable {
    protected:
     class AstHelper : private noncopyable {
        public:
-        AstHelper(AstNode node) : node_(node) {}
+        AstHelper(AstNode node = nullptr, std::string text = "") : node_(node) {
+            if (node_ == nullptr) node_ = AstNode(new Ast(Ast::Root, text));
+        }
 
         AstHelper(AstHelper &&oth) {
             if (this != &oth) {
@@ -35,6 +37,7 @@ class IParser : private noncopyable {
         AstHelper push_leaf(std::string tag, std::string text = "");
         AstHelper &set_extendings(std::pair<std::string, std::string> value);
         const AstHelper &parent() const { return *parent_; }
+        const AstNode &current() const { return node_; }
 
        private:
         AstNode node_;

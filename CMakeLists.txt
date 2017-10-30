@@ -21,6 +21,7 @@ set (EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE})
 set (LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE}/lib)
 
 add_subdirectory(lib)
+add_subdirectory(test)
 
 add_executable(${project_name} main.cpp ${markdown_src})
 target_include_directories(${project_name} PRIVATE include)
