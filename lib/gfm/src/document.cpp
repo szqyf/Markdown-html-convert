@@ -6,7 +6,6 @@
 
 using namespace ts;
 namespace gfm {
-
 using read_f = std::function<bool(char)>;
 
 std::string read(std::istream &in, read_f reader) {
@@ -24,10 +23,10 @@ std::string read(std::istream &in, read_f reader) {
 
 const AstNode &Document::from(std::istream &in) {
     std::string buf;
+    auto helper = AstHelper(document_);
     // document_->reset();
-    reset_ast(document_);
-    auto node = append_ast(document_, "p");
-    auto &parent = document_;
+    helper.reset();
+    auto node = helper.push_leaf("p");
 
     while (!in.eof()) {
         bool fol = true;  // first of line
@@ -40,22 +39,22 @@ const AstNode &Document::from(std::istream &in) {
             if (!buf.empty() && fol &&
                 (size >= 4 || *b == '\t')) {  //行首是4个空格或者是tab
                 fol = false;
-                node = append_ast(parent, "codeblock");
+                node = helper.push_leaf("codeblock");
                 // todo: parse code block here
             } else if (!fol || (size >= 4 || *b == '\t')) {
-                append_ast(node, "text", buf);
+                helper.push_leaf("text", buf);
 
                 int next = in.peek();
 
                 if (size >= 2 &&
                     (next == 13 || next == 10)) {  //行末超过两个空格
-                    append_ast(node, "br");
+                    helper.push_leaf("br");
                 }
             } else if (fol) {
                 int next = in.peek();
 
                 if (next == 13 || next == 10) {  //空行
-                    node = append_ast(node, "p");
+                    node = helper.push_leaf("p");
                 }
             }
         }
@@ -67,7 +66,7 @@ const AstNode &Document::from(std::istream &in) {
 
             if (!buf.empty()) {
                 fol = false;
-                append_ast(node, "text", buf);
+                helper.push_leaf("text", buf);
                 // node->text += buf;
             }
         }
@@ -83,8 +82,8 @@ const AstNode &Document::from(std::istream &in) {
 
                 if (find != std::end(header)) {
                     auto pos = std::distance(find, std::begin(header));
-                    auto h = append_ast(node, "h");
-                    set_ast_extending(h, {"level", std::to_string(pos)});
+                    auto h = helper.push_leaf("h");
+                    h.set_extendings({"level", std::to_string(pos)});
                     // todo: find text and continue set extendings here
                 }
             }

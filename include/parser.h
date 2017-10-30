@@ -18,22 +18,27 @@ class IParser : private noncopyable {
     virtual ~IParser() {}
 
    protected:
-    AstNode make_ast(std::string tag = Ast::Root, std::string text = "") {
-        return AstNode(new Ast(tag, text));
-    }
+    class AstHelper : private noncopyable {
+       public:
+        AstHelper(AstNode node) : node_(node) {}
 
-    void reset_ast(AstNode &node) { node->reset(); }
+        AstHelper(AstHelper &&oth) {
+            if (this != &oth) {
+                this->node_ = oth.node_;
+                oth.node_ = nullptr;
+            }
+        };
+        AstHelper &operator=(AstHelper &&oth);
 
-    AstNode append_ast(AstNode &node, std::string tag, std::string text = "") {
-        auto child = make_ast(tag, text);
-        node->children_.push_back(child);
-        return child;
-    }
+       public:
+        void reset();
+        AstHelper push_leaf(std::string tag, std::string text = "");
+        AstHelper &set_extendings(std::pair<std::string, std::string> value);
+        const AstHelper &parent() const { return *parent_; }
 
-    AstNode &set_ast_extending(AstNode &node,
-                               std::pair<std::string, std::string> value) {
-        node->extendings_.insert(value);
-        return node;//测试
-    }
+       private:
+        AstNode node_;
+        AstHelper *parent_;
+    };
 };
 }

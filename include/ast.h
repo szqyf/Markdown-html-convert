@@ -38,11 +38,11 @@ class Ast final : private noncopyable {
    private:
     Ast(std::string _tag, std::string _text) : tag_(_tag), text_(_text) {}
 
-   private:
-    void reset() {
-        text_ = "";
-        children_.clear();
-        extendings_.clear();
-    }
+//    private:
+//     void reset() {
+//         text_ = "";
+//         children_.clear();
+//         extendings_.clear();
+//     }
 };
 }

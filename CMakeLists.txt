@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.0)
 set (project_name translator)
 project (${project_name} CXX)
 
+enable_testing(true)
+
 aux_source_directory(src markdown_src)
 
 option (CMAKE_BUILD_TYPE "Debug" on)
