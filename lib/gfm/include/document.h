@@ -5,14 +5,14 @@
 namespace gfm {
 class Document : public ts::IParser {
    public:
-    const ts::AstNode &from(std::istream &in) override;
+    const ts::p_ast_t from(std::istream &in) override;
 
-    const ts::AstNode parse_line_from(std::istream &in) override;
+    const ts::p_ast_t parse_line_from(std::istream &in) override;
 
-    const ts::AstNode document() const override;
+    const ts::p_ast_t document() const override;
 
    private:
-    ts::AstNode document_;
+    ts::p_ast_t document_;
 
    public:
     Document();

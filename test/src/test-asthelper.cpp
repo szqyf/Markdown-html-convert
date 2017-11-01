@@ -17,7 +17,7 @@ TEST_CASE("create ast tree", "[ast]") {
     code.extends()->emplace("author", "test");
     code.extends()->emplace("modify-date", "123123");
 
-    for (auto &c : code.children_r()) {
+    for (auto &c : code) {
         std::cout << c.text() << std::endl;
     }
 
@@ -26,6 +26,6 @@ TEST_CASE("create ast tree", "[ast]") {
     REQUIRE(code.children()->size() == 3);
     REQUIRE(p.children()->at(0).tag() == "code");
 
-    p.children()->remove(code);
-    REQUIRE(p.children()->empty());
+    code.children()->remove(2)->remove(1)->remove(4);
+    REQUIRE(code.children()->size() == 1);
 }

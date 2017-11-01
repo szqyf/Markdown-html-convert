@@ -16,7 +16,8 @@
         "**/*.js": {
             "when": "$(basename).ts"
         },
-        "build*": true
+        "build": true,
+        "build-sh": true
     },
     "cmake.preferredGenerators": [
         "Unix Makefiles",

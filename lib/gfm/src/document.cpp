@@ -21,7 +21,7 @@ std::string read(std::istream &in, read_f reader) {
     return buf;
 }
 
-const AstNode &Document::from(std::istream &in) {
+const p_ast_t Document::from(std::istream &in) {
     return document_;
     // std::string buf;
     // document_->clear_children();
@@ -95,13 +95,13 @@ const AstNode &Document::from(std::istream &in) {
     // return document_;
 }
 
-const AstNode Document::parse_line_from(std::istream &in) {
+const p_ast_t Document::parse_line_from(std::istream &in) {
     return document_;
 }
 
-const AstNode Document::document() const { return document_; }
+const p_ast_t Document::document() const { return document_; }
 
-Document::Document():document_("root") {
+Document::Document() {
     
     // if (node == nullptr) document_ = node;
 }

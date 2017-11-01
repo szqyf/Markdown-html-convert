@@ -33,6 +33,6 @@
 
 .gitignore
 
-.vscode/.cmaketools.json
+.vscode/*
 build*/*
 bin/*
