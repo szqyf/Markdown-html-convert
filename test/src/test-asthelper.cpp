@@ -1,32 +1,35 @@
-#include <parser.h>
+#include <ast.h>
 #include <catch.hpp>
 #include <iostream>
 #include <memory>
 
 using namespace ts;
 
-class TestAstHelper : public IParser {
-   public:
-    const AstNode &from(std::istream &in) override { return helper_.current(); }
+TEST_CASE("create AstNode", "[AstHelper]") {
+    AstNode node = std::make_shared<Ast>();
 
-    const AstNode parse_line_from(std::istream &in) override { return helper_.current(); }
+    auto h = node->add_child("h");
+    h->add_extend({"level", "1"});
+    h->add_extend({"text", "run here"});
 
-    const AstNode document() const override { return helper_.current(); }
+    auto p = node->add_child("p");
+    p->add_child("text", "hello");
+    p->add_child("br");
 
-   private:
-    IParser::AstHelper helper_;
+    REQUIRE(!node->empty());
+    REQUIRE(node->size() == 2);
 
-   public:
-    TestAstHelper() {
-        helper_.push_leaf("P");
+    h = node->children()[0];
+    auto hext = h->extendings();
+    REQUIRE(!h->extendings().empty());
+    REQUIRE(hext["level"] == "1");
+    REQUIRE(hext["text"] == "run here");
 
-        auto ast = helper_.current()->children();
-
-        REQUIRE ( ast[0]->tag() == "P" );
-    }
-};
-
-TEST_CASE("create AstHelper", "[AstHelper]") {
-    TestAstHelper helper;
-    helper.from(std::cin);
+    p = node->children()[1];
+    REQUIRE(p->size() == 2);
+    auto pc = p->children();
+    REQUIRE(pc[0]->tag() == "text");
+    REQUIRE(pc[0]->text() == "hello");
+    REQUIRE(pc[1]->tag() == "br");
+    REQUIRE(pc[1]->text() == "");
 }

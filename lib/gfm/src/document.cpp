@@ -23,10 +23,9 @@ std::string read(std::istream &in, read_f reader) {
 
 const AstNode &Document::from(std::istream &in) {
     std::string buf;
-    auto helper = AstHelper(document_);
-    // document_->reset();
-    helper.reset();
-    auto node = helper.push_leaf("p");
+    document_->clear_children();
+
+    auto node = document_->add_child("p");
 
     while (!in.eof()) {
         bool fol = true;  // first of line
@@ -39,22 +38,22 @@ const AstNode &Document::from(std::istream &in) {
             if (!buf.empty() && fol &&
                 (size >= 4 || *b == '\t')) {  //行首是4个空格或者是tab
                 fol = false;
-                node = helper.push_leaf("codeblock");
+                node = document_->add_child("codeblock");
                 // todo: parse code block here
             } else if (!fol || (size >= 4 || *b == '\t')) {
-                helper.push_leaf("text", buf);
+                node->add_child("text", buf);
 
                 int next = in.peek();
 
                 if (size >= 2 &&
                     (next == 13 || next == 10)) {  //行末超过两个空格
-                    helper.push_leaf("br");
+                    node->add_child("br");
                 }
             } else if (fol) {
                 int next = in.peek();
 
                 if (next == 13 || next == 10) {  //空行
-                    node = helper.push_leaf("p");
+                    node = document_->add_child("p");
                 }
             }
         }
@@ -66,7 +65,7 @@ const AstNode &Document::from(std::istream &in) {
 
             if (!buf.empty()) {
                 fol = false;
-                helper.push_leaf("text", buf);
+                node->add_child("text", buf);
                 // node->text += buf;
             }
         }
@@ -82,8 +81,8 @@ const AstNode &Document::from(std::istream &in) {
 
                 if (find != std::end(header)) {
                     auto pos = std::distance(find, std::begin(header));
-                    auto h = helper.push_leaf("h");
-                    h.set_extendings({"level", std::to_string(pos)});
+                    auto h = node->add_child("h");
+                    h->add_extend({"level", std::to_string(pos)});
                     // todo: find text and continue set extendings here
                 }
             }

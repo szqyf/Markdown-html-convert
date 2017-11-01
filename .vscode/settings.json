@@ -69,6 +69,14 @@
         "functional": "cpp",
         "sstream": "cpp",
         "xfunctional": "cpp",
-        "algorithm": "cpp"
+        "algorithm": "cpp",
+        "ctime": "cpp",
+        "fstream": "cpp",
+        "iomanip": "cpp",
+        "map": "cpp",
+        "set": "cpp",
+        "xlocmon": "cpp",
+        "xloctime": "cpp",
+        "xtree": "cpp"
     }
 }

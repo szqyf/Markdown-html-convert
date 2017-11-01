@@ -35,14 +35,36 @@ class Ast final : private noncopyable {
    public:
     static const std::string Root;
 
-   private:
-    Ast(std::string _tag, std::string _text) : tag_(_tag), text_(_text) {}
+    Asts::iterator me_;
 
-//    private:
-//     void reset() {
-//         text_ = "";
-//         children_.clear();
-//         extendings_.clear();
-//     }
+   public:
+    Ast(std::string _tag = Root, std::string _text = "")
+        : tag_(_tag), text_(_text) {}
+
+   public:
+    const size_t size() const { return children_.size(); }
+
+    const bool empty() const { return children_.empty(); }
+
+    const AstNode add_child(std::string _tag, std::string _text = "");
+
+    void remove_child(AstNode node);
+
+    void clear_children() { children_.clear(); }
+
+    void add_extend(std::pair<std::string, std::string> value);
+
+    void remove_extend(std::string name);
+
+    void clear_extends() { extendings_.clear(); }
+
+    const Asts::iterator me() const { return me_; }
+
+    //    private:
+    //     void reset() {
+    //         text_ = "";
+    //         children_.clear();
+    //         extendings_.clear();
+    //     }
 };
 }
