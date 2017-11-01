@@ -9,74 +9,57 @@
 
 namespace ts {
 class Ast;
-using AstNode = std::shared_ptr<Ast>;
-using Asts = std::vector<AstNode>;
-
-class Ast final : private noncopyable,
-                  public std::enable_shared_from_this<Ast> {
-   private:
-    using extend_t = std::unordered_map<std::string, std::string>;
-    using vchildren_t = std::function<void(Asts::iterator)>;
-    using vextends_t = std::function<void(extend_t::iterator)>;
-
-   public:
-    const std::string tag() const { return tag_; }
-
-    const std::string text() const { return text_; }
-
-    // const extend_t &extends() const { return extends_; }
-
-    // const Asts &children() const { return children_; }
-
-    const Asts::iterator me() const { return me_; }
-
-    const AstNode parent() const { return parent_; }
+class AstNode;
+using p_ast_t = std::shared_ptr<Ast>;
+using nodes_t = std::vector<AstNode>;
+using extend_t = std::unordered_map<std::string, std::string>;
+using p_ext_t = std::shared_ptr<extend_t>;
+class AstNode {
+    friend class Ast;
 
    private:
     std::string tag_;
     std::string text_;
-    extend_t extends_;
-    Asts children_;
-    Asts::iterator me_;
-    AstNode parent_;
+    p_ext_t extends_;
+    p_ast_t children_;
+    nodes_t::iterator me_;
 
    public:
-    static const std::string Root;
+    const std::string tag() const { return tag_; }
+    const std::string text() const { return text_; }
+    p_ext_t extends() { return extends_; }
+    extend_t &extends_r() { return *extends_; }
+    p_ast_t children() { return children_; }
+    Ast &children_r() { return *children_; }
+    
+    const nodes_t::iterator me() const { return me_; }
 
    public:
-    Ast(std::string _tag = Root, std::string _text = "")
-        : tag_(_tag), text_(_text) {}
+    AstNode(std::string _tag, std::string _text = "", p_ast_t _parent = nullptr)
+        : tag_(_tag), text_(_text) {
+        children_ = std::make_shared<Ast>(_parent);
+        extends_ = std::make_shared<extend_t>();
+    }
+};
+
+class Ast : public std::enable_shared_from_this<Ast> {
+   private:
+    nodes_t nodes_;
+    p_ast_t parent_;
 
    public:
-    const size_t size() const { return children_.size(); }
+    const bool empty() const { return nodes_.empty(); }
+    const size_t size() const { return nodes_.size(); }
 
-    const bool empty() const { return children_.empty(); }
+    const AstNode &at(int index) const { return nodes_.at(index); }
+    const nodes_t::const_iterator begin() const { return nodes_.begin(); }
+    const nodes_t::const_iterator end() const { return nodes_.end(); }
 
-    const size_t extend_size() const { return extends_.size(); }
+    AstNode &add(std::string tag, std::string text = "");
+    p_ast_t remove(AstNode node);
+    void clear() { nodes_.clear(); }
 
-    const bool extend_empty() const { return extends_.empty(); }
-
-    const AstNode add_child(std::string _tag, std::string _text = "");
-
-    void remove_child(AstNode node);
-
-    void clear_children() { children_.clear(); }
-
-    void visit_children(vchildren_t visit);
-
-    AstNode add_extend(std::pair<std::string, std::string> value);
-
-    AstNode remove_extend(std::string name);
-
-    void clear_extends() { extends_.clear(); }
-
-    void visit_extends(vextends_t visit);
-
-    //    private:
-    //     void reset() {
-    //         text_ = "";
-    //         children_.clear();
-    //         extendings_.clear();
-    //     }
+   public:
+    explicit Ast(p_ast_t _parent = nullptr) : parent_(_parent) {}
 };
 }

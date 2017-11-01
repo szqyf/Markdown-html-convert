@@ -15,6 +15,6 @@ class Document : public ts::IParser {
     ts::AstNode document_;
 
    public:
-    Document(ts::AstNode node = nullptr);
+    Document();
 };
 }

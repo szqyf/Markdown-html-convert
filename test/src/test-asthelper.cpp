@@ -5,51 +5,27 @@
 
 using namespace ts;
 
-TEST_CASE("create AstNode", "[AstHelper]") {
-    AstNode node = std::make_shared<Ast>();
+TEST_CASE("create ast tree", "[ast]") {
+    p_ast_t root = std::make_shared<Ast>();
 
-    auto h = node->add_child("h");
-    h->add_extend({"level", "1"})->add_extend({"text", "run here"});
+    auto p = root->add("p");
+    auto code = p.children()->add("code");
+    code.children()->add("text", "hello");
+    code.children()->add("text", ",");
+    code.children()->add("text", "world");
+    code.extends()->emplace("lang", "c++");
+    code.extends()->emplace("author", "test");
+    code.extends()->emplace("modify-date", "123123");
 
-    auto p = node->add_child("p");
-    p->add_child("text", "hello");
-    auto br = p->add_child("br");
+    for (auto &c : code.children_r()) {
+        std::cout << c.text() << std::endl;
+    }
 
-    REQUIRE(!node->empty());
-    REQUIRE(node->size() == 2);
+    REQUIRE(root->size() == 1);
+    REQUIRE(code.extends()->size() == 3);
+    REQUIRE(code.children()->size() == 3);
+    REQUIRE(p.children()->at(0).tag() == "code");
 
-    h = node->children()[0];
-    REQUIRE(!h->extends().empty());
-
-    h->visit_extends([](auto e) {
-        if ((*e)->first == "level")
-            REQUIRE((*e)->second == "1");
-    })
-
-    // REQUIRE(hext["level"] == "1");
-    // REQUIRE(hext["text"] == "run here");
-
-    h->remove_extend("level");
-    REQUIRE(h->extend_size() == 1);
-
-    h->clear_extends();
-    REQUIRE(h->extend_empty());
-
-    // REQUIRE(h->extends().at("level") == nullptr);
-
-    p = node->children()[1];
-    REQUIRE(p->size() == 2);
-    // auto pc = p->children();
-
-    // REQUIRE(pc[0]->tag() == "text");
-    // REQUIRE(pc[0]->text() == "hello");
-    // REQUIRE(pc[1]->tag() == "br");
-    // REQUIRE(pc[1]->text() == "");
-    // REQUIRE(pc[2]->tag() == "h");
-
-    p->remove_child(br);
-    REQUIRE(p->size() == 1);
-
-    p->clear_children();
-    REQUIRE(p->empty());
+    p.children()->remove(code);
+    REQUIRE(p.children()->empty());
 }

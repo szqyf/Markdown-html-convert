@@ -10,5 +10,4 @@ target_include_directories(${project_name} PRIVATE framework/single_include)
 target_include_directories(${project_name} PRIVATE ../include)
 target_link_libraries(${project_name} ${gfm})
 
-add_test(NAME AstHelper COMMAND ${project_name} "[AstHelper]")
-add_test(NAME Work COMMAND ${project_name} "[Work]")
+add_test(NAME ast COMMAND ${project_name} "[ast]")
