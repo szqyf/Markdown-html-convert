@@ -22,14 +22,14 @@ class Ast final : private noncopyable {
 
     const std::string text() const { return text_; }
 
-    const extend_t &extendings() const { return extendings_; }
+    const extend_t &extends() const { return extends_; }
 
     const Asts &children() const { return children_; }
 
    private:
     std::string tag_;
     std::string text_;
-    extend_t extendings_;
+    extend_t extends_;
     Asts children_;
 
    public:
@@ -56,9 +56,7 @@ class Ast final : private noncopyable {
 
     void remove_extend(std::string name);
 
-    void clear_extends() { extendings_.clear(); }
-
-    const Asts::iterator me() const { return me_; }
+    void clear_extends() { extends_.clear(); }
 
     //    private:
     //     void reset() {

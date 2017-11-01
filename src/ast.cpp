@@ -9,14 +9,16 @@ const AstNode Ast::add_child(std::string _tag, std::string _text) {
     me_ = children_.end();
     me_--;
 
+    (*me_)->me_ = me_;
+
     return *me_;
 }
 
 void Ast::remove_child(AstNode node) { children_.erase(node->me_); }
 
 void Ast::add_extend(std::pair<std::string, std::string> value) {
-    extendings_.emplace(value);
+    extends_.emplace(value);
 }
 
-void Ast::remove_extend(std::string name) { extendings_.erase(name); }
+void Ast::remove_extend(std::string name) { extends_.erase(name); }
 }

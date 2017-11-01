@@ -14,16 +14,24 @@ TEST_CASE("create AstNode", "[AstHelper]") {
 
     auto p = node->add_child("p");
     p->add_child("text", "hello");
-    p->add_child("br");
+    auto br = p->add_child("br");
 
     REQUIRE(!node->empty());
     REQUIRE(node->size() == 2);
 
     h = node->children()[0];
-    auto hext = h->extendings();
-    REQUIRE(!h->extendings().empty());
+    auto hext = h->extends();
+    REQUIRE(!h->extends().empty());
     REQUIRE(hext["level"] == "1");
     REQUIRE(hext["text"] == "run here");
+
+    h->remove_extend("level");
+    REQUIRE(h->extends().size() == 1);
+
+    h->clear_extends();
+    REQUIRE(h->extends().empty());
+
+    // REQUIRE(h->extends().at("level") == nullptr);
 
     p = node->children()[1];
     REQUIRE(p->size() == 2);
@@ -32,4 +40,10 @@ TEST_CASE("create AstNode", "[AstHelper]") {
     REQUIRE(pc[0]->text() == "hello");
     REQUIRE(pc[1]->tag() == "br");
     REQUIRE(pc[1]->text() == "");
+
+    p->remove_child(br);
+    REQUIRE(p->size() == 1);
+
+    p->clear_children();
+    REQUIRE(p->empty());
 }
