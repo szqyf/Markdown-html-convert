@@ -1,4 +1,4 @@
-if [ ! -d build-sh]; then
+if [ ! -d build-sh ]; then
 mkdir build-sh
 fi
 cd build-sh
