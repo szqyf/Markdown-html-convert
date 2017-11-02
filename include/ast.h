@@ -24,19 +24,19 @@ class Ast : protected nodes_t, public std::enable_shared_from_this<Ast> {
     using nodes_t::rend;
     using nodes_t::at;
     using nodes_t::operator[];
+    using nodes_t::front;
+    using nodes_t::back;
     using nodes_t::clear;
     using nodes_t::iterator;
     using nodes_t::const_iterator;
 
     AstNode &add(std::string tag, std::string text = "");
     AstNode &add(std::string tag, extend_t _init);
+    p_ast_t add(extend_t _init);
 
     p_ast_t remove(const AstNode &node);
     p_ast_t remove(size_t pos);
     // void clear() { nodes_.clear(); }
-
-   public:
-    explicit Ast() {}
 };
 
 class AstNode {
@@ -48,10 +48,15 @@ class AstNode {
 
    public:
     const std::string tag() const { return tag_; }
-    // const std::string text() const { return text_; }
 
-    void tag(std::string tag) { tag_ = tag; }
-    // void text(std::string text) { text_ = text; }
+    void tag(std::string tag, bool reset = true) {
+        tag_ = tag;
+
+        if (reset) {
+            children_->clear();
+            extends_->clear();
+        }
+    }
 
     p_ext_t extends() { return extends_; }
     const std::string &extends(std::string key) const {
@@ -78,4 +83,24 @@ class AstNode {
         extends_->swap(_init);
     }
 };
+
+template <typename map>
+inline std::vector<typename map::key_type> keys(const map &m) {
+    std::vector<typename map::key_type> r;
+    r.reserve(m.size());
+
+    for (const auto &el : m) r.emplace_back(el.first);
+
+    return std::move(r);
+}
+
+template <typename map>
+inline std::vector<typename map::key_type> keys(const std::shared_ptr<map> &m) {
+    std::vector<typename map::key_type> r;
+    r.reserve(m->size());
+
+    for (const auto &el : *m) r.emplace_back(el.first);
+
+    return std::move(r);
+}
 }
