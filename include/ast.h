@@ -36,7 +36,9 @@ class Ast : protected nodes_t, public std::enable_shared_from_this<Ast> {
 
     p_ast_t remove(const AstNode &node);
     p_ast_t remove(size_t pos);
-    // void clear() { nodes_.clear(); }
+
+   public:
+    Ast() : std::vector<AstNode>() {}
 };
 
 class AstNode {
@@ -79,7 +81,7 @@ class AstNode {
         if (!_text.empty()) extends_->emplace("value", _text);
     }
 
-    explicit AstNode(std::string _tag, extend_t _init) : AstNode(_tag) {
+    AstNode(std::string _tag, extend_t _init) : AstNode(_tag) {
         extends_->swap(_init);
     }
 };

@@ -95,14 +95,12 @@ const p_ast_t Document::from(std::istream &in) {
     // return document_;
 }
 
-const p_ast_t Document::parse_line_from(std::istream &in) {
-    return document_;
-}
+const p_ast_t Document::parse_line_from(std::istream &in) { return document_; }
 
 const p_ast_t Document::document() const { return document_; }
 
 Document::Document() {
-    
+    document_ = std::make_shared<Ast>();
     // if (node == nullptr) document_ = node;
 }
 }
