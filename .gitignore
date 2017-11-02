@@ -31,6 +31,8 @@
 *.out
 *.app
 
-.vscode/.cmaketools.json
-build/*
+.gitignore
+
+.vscode/*
+build*/*
 bin/*

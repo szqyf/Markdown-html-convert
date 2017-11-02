@@ -12,11 +12,11 @@ int main() {
 
     {  //一行行读取并输出
         // auto tag = ts::make_root();
-        ts::AstNode line;
+        ts::p_ast_t line;
         do {
             line = gfm->parse_line_from(in);
             out << line;
-        } while (line != nullptr);
+        } while (line);
 
         std::cout << "Whole Html is: " << std::endl;
         std::cout << gfm->document() << std::endl;
