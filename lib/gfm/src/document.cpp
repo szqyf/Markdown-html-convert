@@ -1,27 +1,17 @@
 #include <document.h>
+#include <rule.h>
 #include <algorithm>
 #include <cctype>
 #include <functional>
+#include <iostream>
 #include <string>
+#include <vector>
 
 using namespace ts;
 namespace gfm {
-using read_f = std::function<bool(char)>;
-
-std::string read(std::istream &in, read_f reader) {
-    std::string buf;
-    char ch;
-
-    while (!in.eof() && in.get(ch))
-        if (reader(ch))
-            buf += ch;
-        else
-            break;
-
-    return buf;
-}
 
 const p_ast_t Document::from(std::istream &in) {
+    document_->clear();
     return document_;
     // std::string buf;
     // document_->clear_children();
