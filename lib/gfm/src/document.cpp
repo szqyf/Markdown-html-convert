@@ -1,5 +1,5 @@
 ﻿#include <document.h>
-#include <rule.h>
+#include <rules.h>
 #include <utils.h>
 #include <iostream>
 #include <string>
@@ -17,12 +17,21 @@ const p_ast_t Document::from(std::istream &in) {
         fol = (token == token_t::endl);
         std::tie(token, buf) = read_token(in);
 
-        if (token == token_t::blank)
+        if (token == token_t::blank) {
             buf.replace(buf.begin(), buf.end(), "\t", "    ");
 
-        if (fol && token == token_t::blank && buf.size() < 4) {
-            token = token_t::endl;
-            continue;
+            if (fol && buf.size() < 4) {
+                token = token_t::endl;
+                continue;
+            }
+        }
+
+        for (auto &rule : rules) {
+            if (rule->matched(fol, buf)) {
+                auto node = rule->to_ast(buf, in, document_);
+                break;
+                // document_->add(node);
+            }
         }
     }
 
