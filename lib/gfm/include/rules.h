@@ -4,4 +4,4 @@
 #include <memory>
 #include "rules/AtxHeading.h"
 
-namespace gfm { extern std::vector<std::shared_ptr<IRule>> rules; }
+namespace gfm { extern std::vector<std::shared_ptr<ts::IRule>> rules; }

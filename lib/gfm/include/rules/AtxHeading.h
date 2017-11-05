@@ -1,7 +1,7 @@
-#include "../rule.h"
+#include <rule.h>
 
 namespace gfm {
-class AtxHeading : public Simple {
+class AtxHeading : public ts::Simple {
    public:
     const std::string tag() const { return "h"; }
     void read(std::string buf, std::istream &in, ts::p_ast_t &parent) {}

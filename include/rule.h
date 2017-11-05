@@ -1,11 +1,11 @@
 #pragma once
 
-#include <ast.h>
 #include <functional>
 #include <istream>
 #include <string>
+#include "ast.h"
 
-namespace gfm {
+namespace ts {
 using condition_t = std::function<bool(std::string)>;
 
 class IRule {

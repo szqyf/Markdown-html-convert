@@ -15,10 +15,10 @@ foreach (name ${h_files})
     file(APPEND ${rules_h} "#include \"${rname}\"\n")
 endforeach ()
 
-file(APPEND ${rules_h} "\nnamespace gfm { extern std::vector<std::shared_ptr<IRule>> rules; }")
+file(APPEND ${rules_h} "\nnamespace gfm { extern std::vector<std::shared_ptr<ts::IRule>> rules; }")
 
 file(WRITE ${rules_c} "#include <rules.h>\n")
-file(APPEND ${rules_c} "\nnamespace gfm { \n\tstd::vector<std::shared_ptr<IRule>> rules {")
+file(APPEND ${rules_c} "\nnamespace gfm { \n\tstd::vector<std::shared_ptr<ts::IRule>> rules {")
 
 foreach (name ${h_files})
     file(RELATIVE_PATH rname ${PROJECT_SOURCE_DIR}/include ${name})
