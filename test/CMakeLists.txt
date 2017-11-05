@@ -13,3 +13,4 @@ target_include_directories(${project_name} PRIVATE ../lib/gfm/include)
 
 add_test(NAME ast COMMAND ${project_name} "[ast]")
 add_test(NAME document COMMAND ${project_name} "[document]")
+add_test(NAME rules COMMAND ${project_name} "[rules]")

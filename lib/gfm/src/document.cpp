@@ -1,17 +1,31 @@
-#include <document.h>
+﻿#include <document.h>
 #include <rule.h>
-#include <algorithm>
-#include <cctype>
-#include <functional>
+#include <utils.h>
 #include <iostream>
 #include <string>
 #include <vector>
 
 using namespace ts;
 namespace gfm {
-
 const p_ast_t Document::from(std::istream &in) {
     document_->clear();
+    token_t token{token_t::endl};
+    std::string buf;
+    bool fol = true;
+
+    while (token != token_t::end) {
+        fol = (token == token_t::endl);
+        std::tie(token, buf) = read_token(in);
+
+        if (token == token_t::blank)
+            buf.replace(buf.begin(), buf.end(), "\t", "    ");
+
+        if (fol && token == token_t::blank && buf.size() < 4) {
+            token = token_t::endl;
+            continue;
+        }
+    }
+
     return document_;
     // std::string buf;
     // document_->clear_children();

@@ -6,7 +6,6 @@
 
 using namespace gfm;
 using namespace std;
-
 TEST_CASE("test read_token", "[document]") {
     stringstream ss{"http://来测试下！   \t\n1."};
 

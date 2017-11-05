@@ -30,13 +30,4 @@ class Simple : public IRule {
         return start_(buf);
     }
 };
-
-class AtxHeading : public Simple {
-   public:
-    AtxHeading() {
-        must_fol_ = true;
-        start_ = [](std::string s) { return s.front() == '#'; };
-        end_ = [](std::string s) { return true; };
-    }
-};
 }
