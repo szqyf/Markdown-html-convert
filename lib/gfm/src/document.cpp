@@ -1,27 +1,40 @@
-#include <document.h>
-#include <algorithm>
-#include <cctype>
-#include <functional>
+﻿#include <document.h>
+#include <rules.h>
+#include <utils.h>
+#include <iostream>
 #include <string>
+#include <vector>
 
 using namespace ts;
 namespace gfm {
-using read_f = std::function<bool(char)>;
-
-std::string read(std::istream &in, read_f reader) {
-    std::string buf;
-    char ch;
-
-    while (!in.eof() && in.get(ch))
-        if (reader(ch))
-            buf += ch;
-        else
-            break;
-
-    return buf;
-}
-
 const p_ast_t Document::from(std::istream &in) {
+    document_->clear();
+    token_t token{token_t::endl};
+    std::string buf;
+    bool fol = true;
+
+    while (token != token_t::end) {
+        fol = (token == token_t::endl);
+        std::tie(token, buf) = read_token(in);
+
+        if (token == token_t::blank) {
+            buf.replace(buf.begin(), buf.end(), "\t", "    ");
+
+            if (fol && buf.size() < 4) {
+                token = token_t::endl;
+                continue;
+            }
+        }
+
+        for (auto &rule : rules) {
+            if (rule->matched(fol, buf)) {
+                auto node = rule->to_ast(buf, in, document_);
+                break;
+                // document_->add(node);
+            }
+        }
+    }
+
     return document_;
     // std::string buf;
     // document_->clear_children();
@@ -95,14 +108,12 @@ const p_ast_t Document::from(std::istream &in) {
     // return document_;
 }
 
-const p_ast_t Document::parse_line_from(std::istream &in) {
-    return document_;
-}
+const p_ast_t Document::parse_line_from(std::istream &in) { return document_; }
 
 const p_ast_t Document::document() const { return document_; }
 
 Document::Document() {
-    
+    document_ = std::make_shared<Ast>();
     // if (node == nullptr) document_ = node;
 }
 }

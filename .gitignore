@@ -36,3 +36,5 @@
 .vscode/*
 build*/*
 bin/*
+lib/gfm/src/rules.cpp
+lib/gfm/include/rules.h
