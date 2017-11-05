@@ -1,4 +1,4 @@
-#include <document.h>
+﻿#include <document.h>
 #include <utils.h>
 #include <catch.hpp>
 #include <sstream>

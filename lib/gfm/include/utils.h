@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <istream>
 #include <string>
 #include <tuple>

@@ -1,4 +1,4 @@
-#include <utils.h>
+﻿#include <utils.h>
 #include <cctype>
 #include <functional>
 #include <vector>
@@ -7,10 +7,10 @@ namespace gfm {
 using read_t = std::function<bool(char, char)>;
 
 std::vector<read_t> readers{
-    [](char c, char p) { return std::isblank(c); },
-    [](char c, char p) { return std::isalnum(c) || c < 0; },
-    [](char c, char p) { return std::ispunct(c) && (c == p || p == 0); },
-    [](char c, char p) { return std::isspace(c) && !std::isblank(c); }};
+    [](char c, char p) { return c > 0 && std::isblank(c); },
+    [](char c, char p) { return c < 0 || std::isalnum(c); },
+    [](char c, char p) { return c > 0 && std::ispunct(c) && (c == p || p == 0); },
+    [](char c, char p) { return c > 0 && std::isspace(c) && !std::isblank(c); }};
 
 std::tuple<token_t, std::string> read_token(std::istream& in) {
     std::string r;
