@@ -1,11 +1,11 @@
 ﻿#include <document.h>
-#include <utils.h>
+#include <token.h>
 #include <catch.hpp>
 #include <sstream>
 #include <tuple>
 
-using namespace gfm;
 using namespace std;
+using namespace ts;
 TEST_CASE("test read_token", "[document]") {
     stringstream ss{"http://来测试下！   \t\n1."};
 

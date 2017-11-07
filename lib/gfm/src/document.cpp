@@ -1,6 +1,6 @@
 ﻿#include <document.h>
 #include <rules.h>
-#include <utils.h>
+#include <token.h>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -28,7 +28,7 @@ const p_ast_t Document::from(std::istream &in) {
 
         for (auto &rule : rules) {
             if (rule->matched(fol, buf)) {
-                auto node = rule->to_ast(buf, in, document_);
+                auto node = rule->to_ast(in, document_);
                 break;
                 // document_->add(node);
             }
