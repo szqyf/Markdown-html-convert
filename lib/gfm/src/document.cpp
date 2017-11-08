@@ -11,6 +11,7 @@ const p_ast_t Document::from(std::istream &in) {
     document_->clear();
     Token reader{in};
     bool fol = true;
+    auto paragraph = document_.add("p");
 
     while (reader.read()) {
         token_t token = reader.token();
@@ -25,10 +26,16 @@ const p_ast_t Document::from(std::istream &in) {
             }
         }
 
+        if (token == token_t::endl && buf.size() > 2) {
+            paragraph = document_->add("p");
+            fol = true;
+            continue;
+        }
+
         for (auto &rule : rules) {
             if (rule->matched(fol, buf)) {
                 reader.push();
-                if (!rule->to_ast(reader, document_)) {
+                if (!rule->to_ast(reader, paragraph)) {
                     reader.pop();
                     continue;
                 } else
