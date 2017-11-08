@@ -38,6 +38,9 @@ class Ast : protected nodes_t, public std::enable_shared_from_this<Ast> {
     p_ast_t remove(size_t pos);
 
    public:
+    static p_ast_t make() { return std::make_shared<Ast>(); }
+
+   public:
     Ast() : std::vector<AstNode>() {}
 };
 
