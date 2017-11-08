@@ -9,13 +9,12 @@ using namespace ts;
 namespace gfm {
 const p_ast_t Document::from(std::istream &in) {
     document_->clear();
-    token_t token{token_t::endl};
-    std::string buf;
+    Token reader{in};
     bool fol = true;
 
-    while (token != token_t::end) {
-        fol = (token == token_t::endl);
-        std::tie(token, buf) = read_token(in);
+    while (reader.read()) {
+        token_t token = reader.token();
+        std::string buf = reader.str();
 
         if (token == token_t::blank) {
             buf.replace(buf.begin(), buf.end(), "\t", "    ");
@@ -33,6 +32,8 @@ const p_ast_t Document::from(std::istream &in) {
                 // document_->add(node);
             }
         }
+
+        fol = token == token_t::endl;
     }
 
     return document_;

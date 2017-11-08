@@ -6,42 +6,63 @@
 
 using namespace std;
 using namespace ts;
-TEST_CASE("test read_token", "[document]") {
+
+TEST_CASE("token class", "[document]") {
     stringstream ss{"http://来测试下！   \t\n1."};
+    Token token{ss};
 
-    auto token = read_token(ss);
-    REQUIRE(get<0>(token) == token_t::word);
-    REQUIRE(get<1>(token) == "http");
+    token.read();
+    REQUIRE(token.token() == token_t::word);
+    REQUIRE(token.str() == "http");
 
-    token = read_token(ss);
-    REQUIRE(get<0>(token) == token_t::punctation);
-    REQUIRE(get<1>(token) == ":");
+    token.read();
+    REQUIRE(token.token() == token_t::punctation);
+    REQUIRE(token.str() == ":");
 
-    token = read_token(ss);
-    REQUIRE(get<0>(token) == token_t::punctation);
-    REQUIRE(get<1>(token) == "//");
+    token.push();
+    token.read();
+    REQUIRE(token.token() == token_t::punctation);
+    REQUIRE(token.str() == "//");
 
-    token = read_token(ss);
-    REQUIRE(get<0>(token) == token_t::word);
-    REQUIRE(get<1>(token) == "来测试下！");
+    token.read();
+    REQUIRE(token.token() == token_t::word);
+    REQUIRE(token.str() == "来测试下！");
 
-    token = read_token(ss);
-    REQUIRE(get<0>(token) == token_t::blank);
-    REQUIRE(get<1>(token) == "   \t");
+    token.pop();
+    token.read();
+    REQUIRE(token.token() == token_t::punctation);
+    REQUIRE(token.str() == "//");
 
-    token = read_token(ss);
-    REQUIRE(get<0>(token) == token_t::endl);
-    REQUIRE(get<1>(token) == "\n");
+    token.read();
+    REQUIRE(token.token() == token_t::word);
+    REQUIRE(token.str() == "来测试下！");
 
-    token = read_token(ss);
-    REQUIRE(get<0>(token) == token_t::word);
-    REQUIRE(get<1>(token) == "1");
+    token.read();
+    REQUIRE(token.token() == token_t::blank);
+    REQUIRE(token.str() == "   \t");
 
-    token = read_token(ss);
-    REQUIRE(get<0>(token) == token_t::punctation);
-    REQUIRE(get<1>(token) == ".");
+    token.read();
+    REQUIRE(token.token() == token_t::endl);
+    REQUIRE(token.str() == "\n");
 
-    token = read_token(ss);
-    REQUIRE(get<0>(token) == token_t::end);
-    REQUIRE(get<1>(token).empty());
+    token.push();
+    token.read();
+    REQUIRE(token.token() == token_t::word);
+    REQUIRE(token.str() == "1");
+
+    token.pop();
+    REQUIRE(token.token() == token_t::endl);
+    REQUIRE(token.str() == "\n");
+
+    token.read();
+    REQUIRE(token.token() == token_t::word);
+    REQUIRE(token.str() == "1");
+
+    token.read();
+    REQUIRE(token.token() == token_t::punctation);
+    REQUIRE(token.str() == ".");
+
+    token.read();
+    REQUIRE(token.token() == token_t::end);
+    REQUIRE(token.str().empty());
 }
