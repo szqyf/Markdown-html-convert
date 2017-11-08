@@ -27,7 +27,7 @@ class simple : public ts::IRule {
         return r;
     }
 
-    const bool to_ast(std::istream &in, ts::p_ast_t &parent) const override {
+    const bool to_ast(ts::Token &in, ts::p_ast_t &parent) const override {
         return true;
     }
 };

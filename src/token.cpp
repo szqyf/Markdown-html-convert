@@ -38,20 +38,23 @@ bool Token::read() {
         std::string r;
         int i = 0;
 
-        for (auto& rs : readers) {
-            char c, p = 0;
-            while (in_.get(c))
-                if (rs(c, p)) {
-                    r += (p = c);
-                } else {
-                    in_.unget();
-                    break;
-                }
+        if (!in_.eof()) {
+            for (auto& rs : readers) {
+                char c, p = 0;
+                while (in_.get(c))
+                    if (rs(c, p)) {
+                        r += (p = c);
+                    } else {
+                        in_.unget();
+                        break;
+                    }
 
-            if (!r.empty()) break;
+                if (!r.empty()) break;
 
-            ++i;
-        }
+                ++i;
+            }
+        } else
+            i = static_cast<int>(token_t::end);
 
         stack_.emplace_back(static_cast<token_t>(i), std::move(r));
     }

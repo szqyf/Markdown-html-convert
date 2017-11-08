@@ -20,20 +20,23 @@ const p_ast_t Document::from(std::istream &in) {
             buf.replace(buf.begin(), buf.end(), "\t", "    ");
 
             if (fol && buf.size() < 4) {
-                token = token_t::endl;
+                fol = true;
                 continue;
             }
         }
 
         for (auto &rule : rules) {
             if (rule->matched(fol, buf)) {
-                auto node = rule->to_ast(in, document_);
-                break;
-                // document_->add(node);
+                reader.push();
+                if (!rule->to_ast(reader, document_)) {
+                    reader.pop();
+                    continue;
+                } else
+                    break;
             }
         }
 
-        fol = token == token_t::endl;
+        fol = reader.token() == token_t::endl;
     }
 
     return document_;
