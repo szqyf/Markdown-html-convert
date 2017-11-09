@@ -16,13 +16,17 @@ AstNode &Ast::add(std::string tag, extend_t _init) {
     return back();
 }
 
-p_ast_t Ast::add(extend_t _init) {
-    for (auto &el: _init)
-        emplace_back(el.first, el.second);
-    
-    return shared_from_this();
+AstNode &Ast::add(const AstNode &node) {
+    push_back(node);
+
+    return back();
 }
 
+p_ast_t Ast::add(extend_t _init) {
+    for (auto &el : _init) emplace_back(el.first, el.second);
+
+    return shared_from_this();
+}
 
 p_ast_t Ast::remove(const AstNode &node) {
     nodes_t::iterator found = end();

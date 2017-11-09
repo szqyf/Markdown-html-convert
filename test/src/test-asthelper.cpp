@@ -61,8 +61,10 @@ TEST_CASE("test keys", "[ast]") {
         "code",
         {{"aaluna", "betaest"}, {"lang", "c++"}, {"author", "modified"}});
     code.children()->add({{"text", "hello"}, {"text", ","}, {"text", "world"}});
+    code.extends("aaluna", "test");
 
     auto extend_keys = keys(code.extends());
 
     REQUIRE(extend_keys.size() == 3);
+    REQUIRE(code.extends("aaluna") == "test");
 }
