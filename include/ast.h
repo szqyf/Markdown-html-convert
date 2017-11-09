@@ -5,7 +5,6 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include "noncopyable.h"
 
 namespace ts {
 class Ast;

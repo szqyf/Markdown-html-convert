@@ -3,10 +3,9 @@
 #include <istream>
 #include <memory>
 #include "ast.h"
-#include "noncopyable.h"
 
 namespace ts {
-class IParser : private noncopyable {
+class IParser {
    public:
     virtual const p_ast_t from(std::istream &in) = 0;
 

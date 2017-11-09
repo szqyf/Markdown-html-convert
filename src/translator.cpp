@@ -2,6 +2,7 @@
 #include <exception>
 #include <sstream>
 #include "gfm/module.h"
+#include "html/module.h"
 
 namespace ts {
 static std::shared_ptr<IRender>* defaultRender{nullptr};

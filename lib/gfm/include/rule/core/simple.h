@@ -13,7 +13,7 @@ class simple : public ts::IRule {
 
    public:
     const bool matched(bool beginl, std::string buf) const override {
-        return (start_at_beginl_ && !begin) || start(buf);
+        return (start_at_beginl_ && !beginl) || start(buf);
     }
 
     const bool to_ast(ts::Token &in, ts::p_ast_t &parent) const override {
