@@ -9,7 +9,6 @@ class text : public simple {
 
    public:
     const std::string tag() const override { return "text"; }
-    const std::string from_ast(ts::p_ast_t p) const override { return ""; }
 
    public:
     text() {

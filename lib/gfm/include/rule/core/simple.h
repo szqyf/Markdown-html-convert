@@ -17,8 +17,14 @@ class simple : public ts::IRule {
     }
 
     const bool to_ast(ts::Token &in, ts::p_ast_t &parent) const override {
+        while (in.read()) {
+            
+        }
+
         return true;
     }
+
+    const std::string from_ast(ts::p_ast_t &parent) const override { return ""; }
 };
 }
 }
