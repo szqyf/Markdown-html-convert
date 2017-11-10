@@ -1,10 +1,6 @@
-#pragma once
+//该文件为自动生成，请勿自行修改
 #include <rule.h>
 #include <vector>
 #include <memory>
-#include "rule/core/simple.h"
-#include "rule/AtxHeading.h"
-#include "rule/linktext.h"
-#include "rule/text.h"
 
 namespace gfm { extern std::vector<std::shared_ptr<ts::IRule>> rules; }

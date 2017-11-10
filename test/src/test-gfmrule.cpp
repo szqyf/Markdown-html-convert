@@ -3,6 +3,8 @@
 #include <catch.hpp>
 #include <sstream>
 #include <iostream>
+#include <rule/core/simple.h>
+#include <rule/linktext.h>
 
 using namespace ts;
 using namespace gfm;
