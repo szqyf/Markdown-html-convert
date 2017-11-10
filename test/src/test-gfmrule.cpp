@@ -16,7 +16,7 @@ TEST_CASE("linktext rule", "[rules]") {
     p_ast_t root = Ast::make();
 
     tk.read();
-    REQUIRE(text.matched(false, tk.str()));
+    REQUIRE(text.matched(false, tk));
     REQUIRE(text.to_ast(tk, root));
 
     REQUIRE(tk.token() == token_t::blank);
@@ -24,5 +24,5 @@ TEST_CASE("linktext rule", "[rules]") {
 
     REQUIRE(root->size() == 1);
     REQUIRE(root->at(0).tag() == "a");
-    REQUIRE(root->at(0).extends("value") == "http://www.sz.js.cn");
+    REQUIRE(root->at(0).extends("url") == "http://www.sz.js.cn");
 }

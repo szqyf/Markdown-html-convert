@@ -4,8 +4,8 @@ namespace gfm {
 namespace rule {
 class text : public simple {
    protected:
-    bool start(std::string str) const override { return true; }
-    bool end(std::string str) const override { return true; }
+    bool start(const ts::Token& token) const override { return true; }
+    bool end(const ts::Token& token) const override { return true; }
 
    public:
     const std::string tag() const override { return "text"; }
@@ -16,5 +16,5 @@ class text : public simple {
         stop_at_endl_ = true;
     }
 };
-}
-}
+}  // namespace rule
+}  // namespace gfm

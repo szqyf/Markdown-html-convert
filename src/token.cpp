@@ -31,6 +31,8 @@ const std::string Token::str() const {
     return cur_ == 0 ? "" : stack_[cur_ - 1].str;
 }
 
+void Token::on_postread(postread_t postread) { postread_ = postread; }
+
 bool Token::read() {
     auto size = stack_.size();
 
@@ -56,7 +58,11 @@ bool Token::read() {
         } else
             i = static_cast<int>(token_t::end);
 
-        stack_.emplace_back(static_cast<token_t>(i), std::move(r));
+        token_t tk = static_cast<token_t>(i);
+
+        if (postread_ != nullptr) postread_(tk, r);
+
+        stack_.emplace_back(tk, std::move(r));
     }
     cur_++;
 
@@ -84,4 +90,4 @@ std::tuple<token_t, std::string> read_token(std::istream& in) {
 
     return std::make_tuple(static_cast<token_t>(i), r);
 }
-}
+}  // namespace ts

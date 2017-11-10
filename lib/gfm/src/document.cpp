@@ -13,14 +13,16 @@ const p_ast_t Document::from(std::istream &in) {
     Token reader{in};
     bool fol = true;
     auto paragraph = document_->add("p");
+    reader.on_postread([](token_t &token, std::string &str) {
+        if (token == token_t::blank)
+            str.replace(str.begin(), str.end(), "\t", "    ");
+    });
 
     while (reader.read()) {
         token_t token = reader.token();
         std::string buf = reader.str();
 
         if (token == token_t::blank) {
-            buf.replace(buf.begin(), buf.end(), "\t", "    ");
-
             if (fol && buf.size() < 4) {
                 fol = true;
                 continue;
@@ -35,7 +37,7 @@ const p_ast_t Document::from(std::istream &in) {
         }
 
         for (auto &rule : rules) {
-            if (rule->matched(fol, buf)) {
+            if (rule->matched(fol, reader)) {
                 reader.push();
                 auto nodes = paragraph.children();
                 if (!rule->to_ast(reader, nodes)) {
@@ -60,4 +62,4 @@ Document::Document() {
     document_ = std::make_shared<Ast>();
     // if (node == nullptr) document_ = node;
 }
-}
+}  // namespace gfm

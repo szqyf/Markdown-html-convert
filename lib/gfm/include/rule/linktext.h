@@ -7,25 +7,22 @@ namespace gfm {
 namespace rule {
 class linktext : public simple {
    protected:
-    bool start(std::string str) const override {
+    bool start(const ts::Token& token) const override {
+        auto str = token.str();
         std::transform(str.begin(), str.end(), str.begin(), ::tolower);
 
         return str == "http" || str == "https" || str == "ftp" ||
                str == "mailto";
     }
-    bool end(std::string str) const override {
-        return str.front() == ' ' || str.front() == '\t';
+    bool end(const ts::Token& token) const override {
+        return token.token() == ts::token_t::blank;
+    }
+    void post_to_ast(ts::AstNode& node) const override {
+        node.extends("url", node.extends("value"));
     }
 
    public:
     const std::string tag() const override { return "a"; }
-    const bool to_ast(ts::Token &in, ts::p_ast_t &p) const override {
-        simple::to_ast(in, p);
-        auto str = p->back().extends("value");
-        p->back().extends("url", str);
-
-        return true;
-    }
 
    public:
     linktext() {
@@ -34,5 +31,5 @@ class linktext : public simple {
         start_add_ = true;
     }
 };
-}
-}
+}  // namespace rule
+}  // namespace gfm
