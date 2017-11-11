@@ -19,7 +19,7 @@ TEST_CASE("token class", "[document]") {
     REQUIRE(token.token() == token_t::punctation);
     REQUIRE(token.str() == ":");
 
-    token.push();
+    token.push_env();
     token.read();
     REQUIRE(token.token() == token_t::punctation);
     REQUIRE(token.str() == "//");
@@ -28,7 +28,7 @@ TEST_CASE("token class", "[document]") {
     REQUIRE(token.token() == token_t::word);
     REQUIRE(token.str() == "来测试下！");
 
-    token.pop();
+    token.pop_env();
     token.read();
     REQUIRE(token.token() == token_t::punctation);
     REQUIRE(token.str() == "//");
@@ -45,12 +45,12 @@ TEST_CASE("token class", "[document]") {
     REQUIRE(token.token() == token_t::endl);
     REQUIRE(token.str() == "\n");
 
-    token.push();
+    token.push_env();
     token.read();
     REQUIRE(token.token() == token_t::word);
     REQUIRE(token.str() == "1");
 
-    token.pop();
+    token.pop_env();
     REQUIRE(token.token() == token_t::endl);
     REQUIRE(token.str() == "\n");
 
@@ -65,4 +65,14 @@ TEST_CASE("token class", "[document]") {
     token.read();
     REQUIRE(token.token() == token_t::end);
     REQUIRE(token.str().empty());
+}
+
+TEST_CASE("document linktext", "[document]") {
+    gfm::Document document;
+    stringstream ss {"http://www.sz.js.cn link"};
+    auto p = document.from(ss);
+
+    REQUIRE (p->size() == 1);
+    REQUIRE (p->at(0).tag() == "p");
+    REQUIRE (p->at(0).children()->size() == 3);
 }

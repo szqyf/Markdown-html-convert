@@ -19,4 +19,4 @@ add_subdirectory(test)
 
 add_executable(${project_name} ${markdown_src})
 target_include_directories(${project_name} PRIVATE include)
-target_link_libraries(${project_name} gfm)
+target_link_libraries(${project_name} gfm html)

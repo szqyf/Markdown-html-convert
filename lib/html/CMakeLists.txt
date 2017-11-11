@@ -1,4 +1,4 @@
-set(project_name gfm)
+set(project_name html)
 project(${project_name})
 
 set(rules_h include/rules.h)
@@ -35,8 +35,8 @@ endforeach ()
 
 file(APPEND ${rules_c} "\n\t};\n}")
 
-aux_source_directory(src gfm_src)
+aux_source_directory(src html_src)
 
-add_library(${project_name} STATIC ${gfm_src})
+add_library(${project_name} STATIC ${html_src})
 target_include_directories(${project_name} PRIVATE ../../include)
 target_include_directories(${project_name} PRIVATE include)

@@ -5,7 +5,6 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include "noncopyable.h"
 
 namespace ts {
 class Ast;
@@ -32,6 +31,7 @@ class Ast : protected nodes_t, public std::enable_shared_from_this<Ast> {
 
     AstNode &add(std::string tag, std::string text = "");
     AstNode &add(std::string tag, extend_t _init);
+    AstNode &add(const AstNode &node);
     p_ast_t add(extend_t _init);
 
     p_ast_t remove(const AstNode &node);
@@ -66,6 +66,9 @@ class AstNode {
     p_ext_t extends() { return extends_; }
     const std::string &extends(std::string key) const {
         return extends_->at(key);
+    }
+    void extends(std::string key, std::string value) {
+        (*extends_)[key] = value;
     }
     extend_t &extends_r() { return *extends_; }
     p_ast_t children() { return children_; }

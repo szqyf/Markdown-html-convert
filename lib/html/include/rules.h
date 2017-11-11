@@ -3,4 +3,4 @@
 #include <vector>
 #include <memory>
 
-namespace gfm { extern std::vector<std::shared_ptr<ts::IRule>> rules; }
+namespace html { extern std::vector<std::shared_ptr<ts::IRule>> rules; }

@@ -3,17 +3,19 @@
 namespace gfm {
 namespace rule {
 class text : public simple {
+   protected:
+    bool start(const ts::Token& token) const override { return true; }
+    bool end(const ts::Token& token) const override { return true; }
+
    public:
-    const std::string tag() const { return "text"; }
-    const std::string from_ast(ts::p_ast_t p) const override { return ""; }
+    const std::string tag() const override { return "text"; }
 
    public:
     text() {
         start_at_beginl_ = false;
         stop_at_endl_ = true;
-        start_ = [](std::string c) { return true; };
-        end_ = [](std::string c) { return true; };
+        add_start_ = true;
     }
 };
-}
-}
+}  // namespace rule
+}  // namespace gfm
