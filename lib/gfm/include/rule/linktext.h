@@ -17,12 +17,13 @@ class linktext : public simple {
     bool end(const ts::Token& token) const override {
         return token.token() == ts::token_t::blank;
     }
-    void post_to_ast(ts::AstNode& node) const override {
+    bool post_to_ast(ts::AstNode& node) const override {
         node.extends("url", node.extends("value"));
+        return true;
     }
 
    public:
-    const std::string tag() const override { return "a"; }
+    std::string tag() const override { return "a"; }
 
    public:
     linktext() {

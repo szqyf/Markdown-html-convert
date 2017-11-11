@@ -4,7 +4,7 @@
 
 namespace gfm {
 namespace rule {
-class simple : public ts::IRule {
+class simple : virtual public ts::IParserRule, virtual public ts::IRenderRule {
    protected:
     std::string start_of_, end_of_;
     bool start_at_beginl_, stop_at_endl_;
@@ -17,15 +17,17 @@ class simple : public ts::IRule {
     virtual bool end(const ts::Token& token) const {
         return token.str() == end_of_;
     }
-    virtual void post_to_ast(ts::AstNode& node) const {}
+    virtual bool post_to_ast(ts::AstNode& node) const { return true; }
     virtual void post_from_ast(std::string& str) const {}
 
    public:
-    const bool matched(bool beginl, const ts::Token& token) const override {
+    bool matched(bool beginl, const ts::Token& token) const override {
         return (!start_at_beginl_ || beginl) && start(token);
     }
 
-    const bool to_ast(ts::Token& in, ts::p_ast_t& parent) const override {
+    bool need_paragrah() const { return true; }
+
+    bool to_ast(ts::Token& in, ts::p_ast_t& parent) const override {
         ts::AstNode node{tag()};
         std::string b;
 
@@ -39,14 +41,14 @@ class simple : public ts::IRule {
         }
 
         node.extends("value", b);
-        post_to_ast(node);
+
+        if (!post_to_ast(node)) return false;
+
         parent->add(node);
         return true;
     }
 
-    const std::string from_ast(ts::p_ast_t& parent) const override {
-        return "";
-    }
+    std::string from_ast(ts::p_ast_t& parent) const override { return ""; }
 
    public:
     simple() {

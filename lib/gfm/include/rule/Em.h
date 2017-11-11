@@ -1,17 +1,17 @@
-#include <rule.h>
+#include "../rules.h"
 
 namespace gfm {
 namespace rule {
-class text : public simple {
+class Em : public simple {
    protected:
-    bool start(const ts::Token& token) const override { return true; }
+    bool start(const ts::Token& token) const override { return token.str() == "**" || token.str() == "__"; }
     bool end(const ts::Token& token) const override { return true; }
 
    public:
-    std::string tag() const override { return "text"; }
+    std::string tag() const override { return "em"; }
 
    public:
-    text() {
+    Em() {
         start_at_beginl_ = false;
         stop_at_endl_ = true;
         add_start_ = true;
