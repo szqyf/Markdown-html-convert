@@ -14,6 +14,7 @@ class text : public simple {
     text() {
         start_at_beginl_ = false;
         stop_at_endl_ = true;
+        add_start_ = true;
     }
 };
 }  // namespace rule

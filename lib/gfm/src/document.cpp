@@ -10,13 +10,21 @@ using namespace ts;
 namespace gfm {
 const p_ast_t Document::from(std::istream &in) {
     document_->clear();
-    Token reader{in};
+
     bool fol = true;
     auto paragraph = document_->add("p");
-    reader.on_postread([](token_t &token, std::string &str) {
-        if (token == token_t::blank)
-            str.replace(str.begin(), str.end(), "\t", "    ");
-    });
+
+    Token reader{in, [](token_t &token, std::string &str) {
+                     if (token == token_t::blank) {
+                         while (true) {
+                             auto pos = std::string::npos;
+                             if ((pos = str.find("\t")) != std::string::npos)
+                                 str.replace(pos, 4, "    ");
+                             else
+                                 break;
+                         }
+                     }
+                 }};
 
     while (reader.read()) {
         token_t token = reader.token();
@@ -38,13 +46,16 @@ const p_ast_t Document::from(std::istream &in) {
 
         for (auto &rule : rules) {
             if (rule->matched(fol, reader)) {
-                reader.push();
+                reader.push_env();
                 auto nodes = paragraph.children();
                 if (!rule->to_ast(reader, nodes)) {
-                    reader.pop();
+                    reader.pop_env();
                     continue;
-                } else
+                } else {
+                    reader.clear_env();
+                    reader.skip(-1);
                     break;
+                }
             }
         }
 

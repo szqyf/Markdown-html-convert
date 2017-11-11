@@ -1,11 +1,11 @@
 ﻿#include <token.h>
 #include <cctype>
 #include <functional>
+#include <tuple>
 #include <vector>
 
 namespace ts {
 using read_t = std::function<bool(char, char)>;
-
 std::vector<read_t> readers{
     [](char c, char p) { return c > 0 && std::isblank(c); },
     [](char c, char p) { return c < 0 || std::isalnum(c); },
@@ -16,22 +16,31 @@ std::vector<read_t> readers{
         return c > 0 && std::isspace(c) && !std::isblank(c);
     }};
 
-void Token::push() { saved_ = stack_.size(); }
+void Token::push_env() { saved_ = stack_.size(); }
 
-void Token::pop() {
+void Token::pop_env() {
     cur_ = saved_;
     saved_ = -1;
 }
 
+void Token::clear_env() {
+    cur_ = stack_.size();
+    saved_ = -1;
+}
+
+void Token::skip(size_t step) {
+    cur_ += step;
+    if (cur_ < 0) cur_ = 0;
+    if (cur_ > stack_.size()) cur_ = stack_.size();
+}
+
 const token_t Token::token() const {
-    return cur_ == 0 ? token_t::endl : stack_[cur_ - 1].token;
+    return cur_ == 0 ? token_t::endl : std::get<0>(stack_[cur_ - 1]);
 }
 
 const std::string Token::str() const {
-    return cur_ == 0 ? "" : stack_[cur_ - 1].str;
+    return cur_ == 0 ? "" : std::get<1>(stack_[cur_ - 1]);
 }
-
-void Token::on_postread(postread_t postread) { postread_ = postread; }
 
 bool Token::read() {
     auto size = stack_.size();
@@ -60,9 +69,9 @@ bool Token::read() {
 
         token_t tk = static_cast<token_t>(i);
 
-        if (postread_ != nullptr) postread_(tk, r);
+        if (readed_ != nullptr) readed_(tk, r);
 
-        stack_.emplace_back(tk, std::move(r));
+        stack_.emplace_back(std::make_tuple(tk, r));
     }
     cur_++;
 

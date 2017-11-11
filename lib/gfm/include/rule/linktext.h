@@ -28,7 +28,7 @@ class linktext : public simple {
     linktext() {
         start_at_beginl_ = false;
         stop_at_endl_ = true;
-        start_add_ = true;
+        add_start_ = true;
     }
 };
 }  // namespace rule
