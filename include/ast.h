@@ -15,19 +15,19 @@ using p_ext_t = std::shared_ptr<extend_t>;
 using p_ast_t = std::shared_ptr<Ast>;
 class Ast : protected nodes_t, public std::enable_shared_from_this<Ast> {
    public:
-    using nodes_t::empty;
-    using nodes_t::size;
+    using nodes_t::at;
     using nodes_t::begin;
+    using nodes_t::empty;
     using nodes_t::end;
     using nodes_t::rbegin;
     using nodes_t::rend;
-    using nodes_t::at;
+    using nodes_t::size;
     using nodes_t::operator[];
-    using nodes_t::front;
     using nodes_t::back;
     using nodes_t::clear;
-    using nodes_t::iterator;
     using nodes_t::const_iterator;
+    using nodes_t::front;
+    using nodes_t::iterator;
 
     AstNode &add(std::string tag, std::string text = "");
     AstNode &add(std::string tag, extend_t _init);
@@ -64,6 +64,7 @@ class AstNode {
     }
 
     p_ext_t extends() { return extends_; }
+    p_ext_t extends() const { return extends_; }
     const std::string &extends(std::string key) const {
         return extends_->at(key);
     }
@@ -71,7 +72,9 @@ class AstNode {
         (*extends_)[key] = value;
     }
     extend_t &extends_r() { return *extends_; }
+    p_ast_t children() const { return children_; }
     p_ast_t children() { return children_; }
+    Ast &children_r() const { return *children_; }
     Ast &children_r() { return *children_; }
     const AstNode &children(size_t pos) const { return children_->at(pos); }
 
@@ -90,6 +93,8 @@ class AstNode {
     AstNode(std::string _tag, extend_t _init) : AstNode(_tag) {
         extends_->swap(_init);
     }
+
+    AstNode() : AstNode("root") {}
 };
 
 template <typename map>
@@ -111,4 +116,4 @@ inline std::vector<typename map::key_type> keys(const std::shared_ptr<map> &m) {
 
     return std::move(r);
 }
-}
+}  // namespace ts

@@ -4,7 +4,7 @@
 
 namespace gfm {
 namespace rule {
-class simple : virtual public ts::IParserRule, virtual public ts::IRenderRule {
+class simple : virtual public ts::IParserRule {
    protected:
     std::string start_of_, end_of_;
     bool start_at_beginl_, stop_at_endl_;
@@ -27,8 +27,8 @@ class simple : virtual public ts::IParserRule, virtual public ts::IRenderRule {
 
     bool need_paragrah() const { return true; }
 
-    bool to_ast(ts::Token& in, ts::p_ast_t& parent) const override {
-        ts::AstNode node{tag()};
+    bool parse(ts::Token& in, const ts::AstNode& p,
+               ts::AstNode& node) const override {
         std::string b;
 
         if (add_start_) b = in.str();
@@ -44,11 +44,8 @@ class simple : virtual public ts::IParserRule, virtual public ts::IRenderRule {
 
         if (!post_to_ast(node)) return false;
 
-        parent->add(node);
         return true;
     }
-
-    std::string from_ast(ts::p_ast_t& parent) const override { return ""; }
 
    public:
     simple() {

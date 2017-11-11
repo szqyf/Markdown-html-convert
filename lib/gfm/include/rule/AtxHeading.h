@@ -1,4 +1,5 @@
 ﻿#include <rule.h>
+#include "core/simple.h"
 
 namespace gfm {
 namespace rule {

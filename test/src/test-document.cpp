@@ -72,7 +72,7 @@ TEST_CASE("document linktext", "[document]") {
     stringstream ss {"http://www.sz.js.cn link"};
     auto p = document.from(ss);
 
-    REQUIRE (p->size() == 1);
-    REQUIRE (p->at(0).tag() == "p");
-    REQUIRE (p->at(0).children()->size() == 3);
+    REQUIRE (p.children()->size() == 1);
+    REQUIRE (p.children(0).tag() == "p");
+    REQUIRE (p.children(0).children()->size() == 3);
 }

@@ -19,7 +19,8 @@ class IParserRule : virtual public IRule {
    public:
     virtual bool need_paragrah() const = 0;
     virtual bool matched(bool beginl, const Token &in) const = 0;
-    virtual bool to_ast(Token &in, ts::p_ast_t &parent) const = 0;
+    virtual bool parse(Token &in, const ts::AstNode &parent,
+                       ts::AstNode &node) const = 0;
 
    public:
     virtual ~IParserRule() = default;
@@ -27,7 +28,7 @@ class IParserRule : virtual public IRule {
 
 class IRenderRule : virtual public IRule {
    public:
-    virtual std::string from_ast(p_ast_t &p) const = 0;
+    virtual std::string render(const AstNode &p) const = 0;
 
    public:
     virtual ~IRenderRule() = default;
