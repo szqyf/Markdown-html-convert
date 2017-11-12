@@ -76,3 +76,22 @@ TEST_CASE("document linktext", "[document]") {
     REQUIRE (p.children(0).tag() == "p");
     REQUIRE (p.children(0).children()->size() == 3);
 }
+
+TEST_CASE("document text", "[document]") {
+    gfm::Document document;
+
+    stringstream ss {"link\\ \\[]\\\n"};
+    auto p = document.from(ss);
+
+    REQUIRE(p.children()->size() == 1);
+    REQUIRE(p.children()->at(0).children()->size() == 7);
+
+    p = p.children()->at(0);
+    REQUIRE(p.children(0).extends("text") == "link");
+    REQUIRE(p.children(1).extends("text") == "\\");
+    REQUIRE(p.children(2).extends("text") == " ");
+    REQUIRE(p.children(3).extends("text") == "[");
+    REQUIRE(p.children(4).extends("text") == "]");
+    REQUIRE(p.children(5).extends("text") == "\\");
+    REQUIRE(p.children(6).extends("text") == "\n");    
+}

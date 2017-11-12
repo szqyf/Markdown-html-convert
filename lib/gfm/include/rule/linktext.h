@@ -5,31 +5,34 @@
 
 namespace gfm {
 namespace rule {
-class linktext : public simple {
-   protected:
-    bool start(const ts::Token& token) const override {
-        auto str = token.str();
+class linktext : public ts::IParserRule {
+   public:
+    std::string tag() const { return "a"; }
+    bool need_paragrah() const override { return true; }
+    bool matched(bool beginl, const ts::Token &in) const override {
+        auto str = in.str();
         std::transform(str.begin(), str.end(), str.begin(), ::tolower);
 
         return str == "http" || str == "https" || str == "ftp" ||
                str == "mailto";
     }
-    bool end(const ts::Token& token) const override {
-        return token.token() == ts::token_t::blank;
-    }
-    bool post_to_ast(ts::AstNode& node) const override {
-        node.extends("url", node.extends("value"));
+    bool parse(ts::Token &in, const ts::AstNode &parent,
+               ts::AstNode &node) const override {
+        auto text = in.str();
+
+        while (in.read()) {
+            auto token = in.token();
+
+            if (token == ts::token_t::endl || token == ts::token_t::blank)
+                break;
+
+            text += in.str();
+        }
+
+        node.children()->add("text", text);
+        node.extends("href", text);
+
         return true;
-    }
-
-   public:
-    std::string tag() const override { return "a"; }
-
-   public:
-    linktext() {
-        start_at_beginl_ = false;
-        stop_at_endl_ = true;
-        add_start_ = true;
     }
 };
 }  // namespace rule

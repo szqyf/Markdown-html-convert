@@ -1,6 +1,7 @@
 #include <ast.h>
 #include <rule/core/simple.h>
 #include <rule/linktext.h>
+#include <rule/text.h>
 #include <rules.h>
 #include <catch.hpp>
 #include <iostream>
@@ -27,5 +28,7 @@ TEST_CASE("linktext rule", "[rules]") {
 
     REQUIRE(root.children()->size() == 1);
     REQUIRE(root.children(0).tag() == "a");
-    REQUIRE(root.children(0).extends("url") == "http://www.sz.js.cn");
+    REQUIRE(root.children(0).extends("href") == "http://www.sz.js.cn");
+    REQUIRE(root.children(0).children(0).extends("text") ==
+            "http://www.sz.js.cn");
 }

@@ -12,7 +12,7 @@ const AstNode &Document::from(std::istream &in) {
     document_.children()->clear();
 
     bool fol = true;
-    auto nodes = document_;
+    auto parent = document_;
 
     Token reader{in, [](token_t &token, std::string &str) {
                      if (token == token_t::blank) {
@@ -39,7 +39,7 @@ const AstNode &Document::from(std::istream &in) {
 
         if (token == token_t::endl &&
             std::count(buf.begin(), buf.end(), '\n') > 2) {
-            nodes = document_.children()->add("p");
+            parent = document_.children()->add("p");
             fol = true;
             continue;
         }
@@ -48,15 +48,20 @@ const AstNode &Document::from(std::istream &in) {
             if (rule->matched(fol, reader)) {
                 ts::AstNode node{rule->tag()};
 
-                if (rule->need_paragrah() && nodes.tag() != "p")
-                    nodes = document_.children()->add("p");
+                if (rule->need_paragrah() && parent.tag() != "p")
+                    parent = document_.children()->add("p");
+                else if (!rule->need_paragrah() && parent.tag() == "p") {
+                    if (parent.children()->size() == 0)
+                        document_.children()->remove(parent);
+                    parent = document_;
+                }
 
                 reader.push_env();
-                if (!rule->parse(reader, nodes, node)) {
+                if (!rule->parse(reader, parent, node)) {
                     reader.pop_env();
                     continue;
                 } else {
-                    nodes.children()->add(node);
+                    parent.children()->add(node);
                     reader.clear_env();
                     reader.skip(-1);
                     break;

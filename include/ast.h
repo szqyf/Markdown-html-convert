@@ -87,7 +87,7 @@ class AstNode {
     explicit AstNode(std::string _tag, std::string _text = "") : tag_(_tag) {
         children_ = std::make_shared<Ast>();
         extends_ = std::make_shared<extend_t>();
-        if (!_text.empty()) extends_->emplace("value", _text);
+        if (!_text.empty()) extends_->emplace("text", _text);
     }
 
     AstNode(std::string _tag, extend_t _init) : AstNode(_tag) {

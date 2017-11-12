@@ -17,8 +17,7 @@ class simple : virtual public ts::IParserRule {
     virtual bool end(const ts::Token& token) const {
         return token.str() == end_of_;
     }
-    virtual bool post_to_ast(ts::AstNode& node) const { return true; }
-    virtual void post_from_ast(std::string& str) const {}
+    virtual bool post_parse(ts::AstNode& node) const { return true; }
 
    public:
     bool matched(bool beginl, const ts::Token& token) const override {
@@ -29,20 +28,20 @@ class simple : virtual public ts::IParserRule {
 
     bool parse(ts::Token& in, const ts::AstNode& p,
                ts::AstNode& node) const override {
-        std::string b;
+        std::string text;
 
-        if (add_start_) b = in.str();
+        if (add_start_) text = in.str();
 
         while (in.read()) {
             if ((stop_at_endl_ && in.token() == ts::token_t::endl) || end(in))
                 break;
 
-            b += in.str();
+            text += in.str();
         }
 
-        node.extends("value", b);
+        node.children()->add("text", text);
 
-        if (!post_to_ast(node)) return false;
+        if (!post_parse(node)) return false;
 
         return true;
     }
