@@ -6,7 +6,7 @@
 #include "../../lib/gfm/include/document.h"
 
 namespace gfm {
-inline bool match(std::string name) { return true; }
+inline bool match(std::string name) { return name == "gfm"; }
 
 inline bool has_parser() { return true; }
 

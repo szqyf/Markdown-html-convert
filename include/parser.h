@@ -3,16 +3,15 @@
 #include <istream>
 #include <memory>
 #include "ast.h"
-#include "noncopyable.h"
 
 namespace ts {
-class IParser : private noncopyable {
+class IParser {
    public:
-    virtual const p_ast_t from(std::istream &in) = 0;
+    virtual const AstNode &from(std::istream &in) = 0;
 
-    virtual const p_ast_t parse_line_from(std::istream &in) = 0;
+    virtual const AstNode &parse_line_from(std::istream &in) = 0;
 
-    virtual const p_ast_t document() const = 0;
+    virtual const AstNode &document() const = 0;
 
    public:
     virtual ~IParser() {}
