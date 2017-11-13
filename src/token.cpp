@@ -22,19 +22,18 @@ inline token_t get_token_by_char(char c) {
 void Token::push_env() { saved_ = stack_.size(); }
 
 void Token::pop_env() {
-    cur_ = saved_;
+    if (saved_ != -1) cur_ = saved_;
     saved_ = -1;
 }
 
 void Token::clear_env() {
-    cur_ = stack_.size();
+    // cur_ = stack_.size();
     saved_ = -1;
 }
 
-void Token::skip(size_t step) {
-    cur_ += step;
+void Token::unread() {
+    cur_--;
     if (cur_ < 0) cur_ = 0;
-    if (cur_ > stack_.size()) cur_ = stack_.size();
 }
 
 const token_t Token::token() const {
@@ -106,17 +105,12 @@ bool Token::read() {
     return token() != token_t::end;
 }
 
-std::string Token::trunc(size_t size) {
-    if (token() == token_t::end) return "";
-
-    auto _str = str();
-    if (_str.size() == 1) return _str;
-
-    std::get<1>(stack_.back()) = _str.substr(0, size);
-    _str = _str.substr(size);
-
-    stack_.emplace_back(std::make_tuple(token(), _str));
-
-    return str();
+const bool Token::eof() const { return token() == token_t::end; }
+const bool Token::has_puncation(std::string s) const {
+    return token() == token_t::punctation && str() == s;
 }
+const bool Token::all_space() const {
+    return token() == token_t::endl || token() == token_t::blank;
+}
+
 }  // namespace ts

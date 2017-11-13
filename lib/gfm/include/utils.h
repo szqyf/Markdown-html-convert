@@ -1,8 +1,10 @@
 #pragma once
 #include <ast.h>
 #include <token.h>
+#include <istream>
 #include <string>
 
 namespace gfm {
-std::string get_text_with_escaped(ts::Token &in);
+bool parse_link(ts::Token &in, std::string &alt, std::string &href,
+                std::string &title, bool &is_ref);
 }  // namespace gfm

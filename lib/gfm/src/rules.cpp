@@ -4,6 +4,7 @@
 #include <rule/Br.h>
 #include <rule/Em.h>
 #include <rule/Img.h>
+#include <rule/Link.h>
 #include <rule/linktext.h>
 #include <rule/text.h>
 
@@ -13,6 +14,7 @@ namespace gfm {
 		std::make_shared<rule::Br>(),
 		std::make_shared<rule::Em>(),
 		std::make_shared<rule::Img>(),
+		std::make_shared<rule::Link>(),
 		std::make_shared<rule::linktext>(),
 		std::make_shared<rule::text>(),
 	};

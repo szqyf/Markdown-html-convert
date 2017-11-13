@@ -18,19 +18,14 @@ class linktext : public ts::IParserRule {
     }
     bool parse(ts::Token &in, const ts::AstNode &parent,
                ts::AstNode &node) const override {
-        auto text = in.str();
-
-        while (in.read()) {
-            auto token = in.token();
-
-            if (token == ts::token_t::endl || token == ts::token_t::blank)
-                break;
-
+        std::string text;
+        do {
             text += in.str();
-        }
+        } while (in.read() && !in.all_space());
 
         node.children()->add("text", text);
         node.extends("href", text);
+        in.unread();
 
         return true;
     }

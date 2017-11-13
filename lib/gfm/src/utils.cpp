@@ -1,21 +1,44 @@
 #include <utils.h>
 
+using namespace ts;
 namespace gfm {
-std::string get_text_with_escaped(ts::Token &in) {
-    std::string str = in.str();
-    if (str == "\\\\")
-        str = "\\";
-    else if (str == "\\") {  //转义
-        in.read();
-        auto token = in.token();
+bool parse_link(ts::Token &in, std::string &alt, std::string &href,
+                std::string &title, bool &is_ref) {
+    is_ref = false;
+    alt = "";
+    href = "";
+    title = "";
 
-        if (token == ts::token_t::word || token == ts::token_t::punctation)
-            str = in.trunc(1);
-        else
-            in.skip(-1);
+    if (!in.has_puncation("[")) return false;
+
+    while (in.read() && !in.has_puncation("]"))  // get alt
+        alt += in.str();
+
+    in.read();
+    if (!in.has_puncation("(") && !in.has_puncation("[")) return false;
+
+    if (in.str() == "(")
+        while (in.read() && !in.has_puncation(")")) {
+            if (in.token() == token_t::endl)
+                return false;
+            else if (in.has_puncation("\"")) {
+                while (in.read() && !in.has_puncation("\""))
+                    if (in.token() == token_t::endl)
+                        return false;
+                    else
+                        title += in.str();
+            } else if (in.token() != token_t::blank)
+                href += in.str();
+        }
+    else if (in.str() == "[") {
+        is_ref = true;
+        while (in.read() && !in.has_puncation("]"))
+            if (in.token() == token_t::endl)
+                return false;
+            else
+                href += in.str();
     }
 
-    return str;
+    return true;
 }
-
 }  // namespace gfm

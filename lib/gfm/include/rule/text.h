@@ -14,8 +14,6 @@ class text : public ts::IParserRule {
                ts::AstNode &node) const override {
         node.extends("text", in.str());
 
-        in.read();
-
         return true;
     }
 };

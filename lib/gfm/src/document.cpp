@@ -63,7 +63,6 @@ const AstNode &Document::from(std::istream &in) {
                 } else {
                     parent.children()->add(node);
                     reader.clear_env();
-                    reader.skip(-1);
                     break;
                 }
             }
