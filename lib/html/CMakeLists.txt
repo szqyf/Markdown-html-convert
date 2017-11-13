@@ -1,4 +1,4 @@
-set(project_name gfm)
+set(project_name html)
 project(${project_name})
 
 set(rules_h include/rules.h)
@@ -15,9 +15,8 @@ foreach (name ${core_files})
     file(APPEND ${rules_h} "#include <${name}>\n")
 endforeach ()
 
-file(APPEND ${rules_h} "\nnamespace ${project_name} { extern std::vector<std::shared_ptr<ts::IParserRule>> rules; }")
-# file(APPEND ${rules_h} "\nnamespace ${project_name} {\nclass Rules {\n\tpublic:\n\t\tvoid for_each(ts::iterator_t iterator);\n}; }")
 
+file(APPEND ${rules_h} "\nnamespace ${project_name} { extern std::vector<std::shared_ptr<ts::IRenderRule>> rules; }")
 
 file(WRITE ${rules_c} "//该文件为自动生成，请勿自行修改\n")
 file(APPEND ${rules_c} "#include <rules.h>\n")
@@ -26,7 +25,7 @@ foreach (name ${h_files})
     file(APPEND ${rules_c} "#include <${name}>\n")
 endforeach ()
 
-file(APPEND ${rules_c} "\nnamespace ${project_name} { \n\tstd::vector<std::shared_ptr<ts::IParserRule>> rules {")
+file(APPEND ${rules_c} "\nnamespace ${project_name} { \n\tstd::vector<std::shared_ptr<ts::IRenderRule>> rules {")
 
 
 foreach (name ${h_files})
@@ -36,8 +35,8 @@ endforeach ()
 
 file(APPEND ${rules_c} "\n\t};\n}")
 
-aux_source_directory(src gfm_src)
+aux_source_directory(src html_src)
 
-add_library(${project_name} STATIC ${gfm_src})
+add_library(${project_name} STATIC ${html_src})
 target_include_directories(${project_name} PRIVATE ../../include)
 target_include_directories(${project_name} PRIVATE include)

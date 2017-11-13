@@ -1,20 +1,21 @@
 #include <rule.h>
+#include <utils.h>
 
 namespace gfm {
 namespace rule {
-class text : public simple {
-   protected:
-    bool start(std::string str) const override { return true; }
-    bool end(std::string str) const override { return true; }
-
+class text : public ts::IParserRule {
    public:
-    const std::string tag() const override { return "text"; }
+    std::string tag() const override { return "text"; }
+    bool need_paragrah() const override { return true; }
+    bool matched(bool beginl, const ts::Token &in) const override {
+        return true;
+    }
+    bool parse(ts::Token &in, const ts::AstNode &parent,
+               ts::AstNode &node) const override {
+        node.extends("text", in.str());
 
-   public:
-    text() {
-        start_at_beginl_ = false;
-        stop_at_endl_ = true;
+        return true;
     }
 };
-}
-}
+}  // namespace rule
+}  // namespace gfm

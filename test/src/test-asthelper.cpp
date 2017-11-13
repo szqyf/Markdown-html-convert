@@ -18,7 +18,7 @@ TEST_CASE("create ast tree", "[ast]") {
     code.extends()->emplace("modify-date", "123123");
 
     for (auto &c : code) {
-        std::cout << c.extends("value") << std::endl;
+        std::cout << c.extends("text") << std::endl;
     }
 
     REQUIRE(root->size() == 1);
@@ -50,7 +50,7 @@ TEST_CASE("compare extend", "[ast]") {
     auto child = code.children()->begin();
 
     REQUIRE(child->extends()->size() == 1);
-    REQUIRE(child->extends("value") == "hello");
+    REQUIRE(child->extends("text") == "hello");
 }
 
 TEST_CASE("test keys", "[ast]") {
@@ -61,8 +61,12 @@ TEST_CASE("test keys", "[ast]") {
         "code",
         {{"aaluna", "betaest"}, {"lang", "c++"}, {"author", "modified"}});
     code.children()->add({{"text", "hello"}, {"text", ","}, {"text", "world"}});
+    code.extends("aaluna", "test");
+    code.extends("avalue", "hello, test");
+    code.extends("_urwrite", "it's good");
 
     auto extend_keys = keys(code.extends());
 
-    REQUIRE(extend_keys.size() == 3);
+    REQUIRE(extend_keys.size() == 5);
+    REQUIRE(code.extends("aaluna") == "test");
 }

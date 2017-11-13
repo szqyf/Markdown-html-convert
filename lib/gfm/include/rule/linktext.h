@@ -5,23 +5,30 @@
 
 namespace gfm {
 namespace rule {
-class linktext : public simple {
-   protected:
-    bool start(std::string str) const override {
+class linktext : public ts::IParserRule {
+   public:
+    std::string tag() const { return "a"; }
+    bool need_paragrah() const override { return true; }
+    bool matched(bool beginl, const ts::Token &in) const override {
+        auto str = in.str();
         std::transform(str.begin(), str.end(), str.begin(), ::tolower);
 
         return str == "http" || str == "https" || str == "ftp" ||
                str == "mailto";
     }
-    bool end(std::string str) const override {
-        return str.front() == ' ' || str.front() == '\t';
+    bool parse(ts::Token &in, const ts::AstNode &parent,
+               ts::AstNode &node) const override {
+        std::string text;
+        do {
+            text += in.str();
+        } while (in.read() && !in.all_space());
+
+        node.children()->add("text", text);
+        node.extends("href", text);
+        in.unread();
+
+        return true;
     }
-
-   public:
-    const std::string tag() const override { return "a"; }
-
-   public:
-    linktext() { start_at_beginl_ = false; }
 };
-}
-}
+}  // namespace rule
+}  // namespace gfm
