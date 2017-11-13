@@ -63,14 +63,15 @@ class AstNode {
         }
     }
 
-    p_ext_t extends() { return extends_; }
     p_ext_t extends() const { return extends_; }
+    p_ext_t extends() { return extends_; }
     const std::string &extends(std::string key) const {
         return extends_->at(key);
     }
     void extends(std::string key, std::string value) {
         (*extends_)[key] = value;
     }
+    extend_t &extends_r() const { return *extends_; }
     extend_t &extends_r() { return *extends_; }
     p_ast_t children() const { return children_; }
     p_ast_t children() { return children_; }
@@ -81,6 +82,8 @@ class AstNode {
    public:
     const nodes_t::const_iterator begin() { return children_->begin(); }
     const nodes_t::const_iterator end() { return children_->end(); }
+    const nodes_t::const_iterator begin() const { return children_->begin(); }
+    const nodes_t::const_iterator end() const { return children_->end(); }
     bool operator==(const AstNode &node) { return this == &node; }
 
    public:
