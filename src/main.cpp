@@ -10,20 +10,8 @@ int main() {
 
     ts::set_default_render(html);
 
-    {  //一行行读取并输出
-        // auto tag = ts::make_root();
-        ts::p_ast_t line;
-        do {
-            line = gfm->parse_line_from(in);
-            out << line;
-        } while (line);
-
-        std::cout << "Whole Html is: " << std::endl;
-        std::cout << gfm->document() << std::endl;
-    }
-
     {  //全部读取并输出
         in >> gfm;
-        out << gfm->document();
+        out << gfm;
     }
 }

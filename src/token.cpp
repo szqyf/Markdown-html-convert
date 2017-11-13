@@ -1,37 +1,39 @@
 ﻿#include <token.h>
 #include <cctype>
-#include <functional>
+#include <map>
 #include <tuple>
 #include <vector>
 
 namespace ts {
-using read_t = std::function<bool(char, char)>;
-std::vector<read_t> readers{
-    [](char c, char p) { return c > 0 && std::isblank(c); },
-    [](char c, char p) { return c < 0 || std::isalnum(c); },
-    [](char c, char p) {
-        return c > 0 && std::ispunct(c) && (c == p || p == 0);
-    },
-    [](char c, char p) {
-        return c > 0 && std::isspace(c) && !std::isblank(c);
-    }};
+inline bool isblank(char c) { return c > 0 && std::isblank(c); }
+inline bool isword(char c) { return c < 0 || std::isalnum(c); }
+inline bool ispunct(char c) { return c > 0 && std::ispunct(c); }
+inline bool isendl(char c) {
+    return c > 0 && std::isspace(c) && !std::isblank(c);
+}
+inline token_t get_token_by_char(char c) {
+    if (isblank(c)) return token_t::blank;
+    if (isword(c)) return token_t::word;
+    if (ispunct(c)) return token_t::punctation;
+    if (isendl(c)) return token_t::endl;
+    return token_t::end;
+}
 
 void Token::push_env() { saved_ = stack_.size(); }
 
 void Token::pop_env() {
-    cur_ = saved_;
+    if (saved_ != -1) cur_ = saved_;
     saved_ = -1;
 }
 
 void Token::clear_env() {
-    cur_ = stack_.size();
+    // cur_ = stack_.size();
     saved_ = -1;
 }
 
-void Token::skip(size_t step) {
-    cur_ += step;
+void Token::unread() {
+    cur_--;
     if (cur_ < 0) cur_ = 0;
-    if (cur_ > stack_.size()) cur_ = stack_.size();
 }
 
 const token_t Token::token() const {
@@ -47,27 +49,52 @@ bool Token::read() {
 
     if (cur_ == size) {
         std::string r;
-        int i = 0;
+        char c, p = 0;
+        token_t tk = token_t::end;
 
-        if (!in_.eof()) {
-            for (auto& rs : readers) {
-                char c, p = 0;
-                while (in_.get(c))
-                    if (rs(c, p)) {
-                        r += (p = c);
-                    } else {
-                        in_.unget();
-                        break;
+        if (in_.get(c)) {
+            if (enable_escaped_ && c == escaped_ch_) {
+                tk = token_t::word;
+
+                if (in_.get(c)) {
+                    token_t t = get_token_by_char(c);
+
+                    switch (t) {
+                        case token_t::word:
+                        case token_t::blank:
+                            r.push_back(escaped_ch_);
+                            r.push_back(c);
+                            break;
+                        case token_t::punctation:
+                            r = c;
+                            break;
+                        case token_t::endl:
+                            r.push_back(c);
+                            r.push_back(c);
+                            tk = token_t::endl;
+                            break;
                     }
-
-                if (!r.empty()) break;
-
-                ++i;
+                } else {
+                    r = escaped_ch_;
+                }
+            } else {
+                tk = get_token_by_char(c);
+                r = c;
             }
-        } else
-            i = static_cast<int>(token_t::end);
 
-        token_t tk = static_cast<token_t>(i);
+            p = c;
+
+            while (in_.get(c)) {
+                token_t t = get_token_by_char(c);
+
+                if (t == tk && !(tk == token_t::punctation && p != c)) {
+                    r += (p = c);
+                } else {
+                    in_.unget();
+                    break;
+                }
+            }
+        }
 
         if (readed_ != nullptr) readed_(tk, r);
 
@@ -78,25 +105,12 @@ bool Token::read() {
     return token() != token_t::end;
 }
 
-std::tuple<token_t, std::string> read_token(std::istream& in) {
-    std::string r;
-    int i = 0;
-
-    for (auto& rs : readers) {
-        char c, p = 0;
-        while (in.get(c))
-            if (rs(c, p)) {
-                r += (p = c);
-            } else {
-                in.unget();
-                break;
-            }
-
-        if (!r.empty()) break;
-
-        ++i;
-    }
-
-    return std::make_tuple(static_cast<token_t>(i), r);
+const bool Token::eof() const { return token() == token_t::end; }
+const bool Token::has_puncation(std::string s) const {
+    return token() == token_t::punctation && str() == s;
 }
+const bool Token::all_space() const {
+    return token() == token_t::endl || token() == token_t::blank;
+}
+
 }  // namespace ts

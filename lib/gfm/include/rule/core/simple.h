@@ -4,7 +4,7 @@
 
 namespace gfm {
 namespace rule {
-class simple : public ts::IRule {
+class simple : virtual public ts::IParserRule {
    protected:
     std::string start_of_, end_of_;
     bool start_at_beginl_, stop_at_endl_;
@@ -17,35 +17,33 @@ class simple : public ts::IRule {
     virtual bool end(const ts::Token& token) const {
         return token.str() == end_of_;
     }
-    virtual void post_to_ast(ts::AstNode& node) const {}
-    virtual void post_from_ast(std::string& str) const {}
+    virtual bool post_parse(ts::AstNode& node) const { return true; }
 
    public:
-    const bool matched(bool beginl, const ts::Token& token) const override {
+    bool matched(bool beginl, const ts::Token& token) const override {
         return (!start_at_beginl_ || beginl) && start(token);
     }
 
-    const bool to_ast(ts::Token& in, ts::p_ast_t& parent) const override {
-        ts::AstNode node{tag()};
-        std::string b;
+    bool need_paragrah() const { return true; }
 
-        if (add_start_) b = in.str();
+    bool parse(ts::Token& in, const ts::AstNode& p,
+               ts::AstNode& node) const override {
+        std::string text;
+
+        if (add_start_) text = in.str();
 
         while (in.read()) {
             if ((stop_at_endl_ && in.token() == ts::token_t::endl) || end(in))
                 break;
 
-            b += in.str();
+            text += in.str();
         }
 
-        node.extends("value", b);
-        post_to_ast(node);
-        parent->add(node);
-        return true;
-    }
+        node.children()->add("text", text);
 
-    const std::string from_ast(ts::p_ast_t& parent) const override {
-        return "";
+        if (!post_parse(node)) return false;
+
+        return true;
     }
 
    public:

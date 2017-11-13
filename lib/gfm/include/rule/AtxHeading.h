@@ -1,4 +1,5 @@
 ﻿#include <rule.h>
+#include "core/simple.h"
 
 namespace gfm {
 namespace rule {
@@ -11,7 +12,7 @@ class AtxHeading : public simple {
     bool end(const ts::Token& token) const override { return true; }
 
    public:
-    const std::string tag() const override { return "h"; }
+    std::string tag() const override { return "h"; }
 
    public:
     AtxHeading() {
