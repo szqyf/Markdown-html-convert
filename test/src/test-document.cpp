@@ -108,18 +108,25 @@ TEST_CASE("document linktext", "[document]") {
 TEST_CASE("document text", "[document]") {
     gfm::Document document;
 
-    stringstream ss{"link\\ \\[]\\\n"};
+    stringstream ss{"link\\ \\[]\\\nhelper  \n         good"};
     auto p = document.from(ss);
 
-    REQUIRE(p.children()->size() == 1);
-    REQUIRE(p.children()->at(0).children()->size() == 5);
+    REQUIRE(p.children()->size() == 2);
+    REQUIRE(p.children(0).children()->size() == 4);
+    REQUIRE(p.children(1).children()->size() == 4);
 
-    p = p.children()->at(0);
-    REQUIRE(p.children(0).extends("text") == "link");
-    REQUIRE(p.children(1).extends("text") == "\\ ");
-    REQUIRE(p.children(2).extends("text") == "[");
-    REQUIRE(p.children(3).extends("text") == "]");
-    REQUIRE(p.children(4).extends("text") == "\n\n");
+    auto x = p.children()->at(0);
+    REQUIRE(x.children(0).extends("text") == "link");
+    REQUIRE(x.children(1).extends("text") == "\\ ");
+    REQUIRE(x.children(2).extends("text") == "[");
+    REQUIRE(x.children(3).extends("text") == "]");
+
+    auto y = p.children(1);
+
+    REQUIRE(y.children(0).extends("text") == "helper");
+    REQUIRE(y.children(1).tag() == "br");
+    REQUIRE(y.children(2).extends("text") == "\n");
+    REQUIRE(y.children(3).extends("text") == "good");
 }
 
 TEST_CASE("img", "[document]") {
@@ -190,4 +197,13 @@ TEST_CASE("link ref", "[document]") {
     REQUIRE(p.children(0).extends("is_ref") == "true");
     REQUIRE(p.children(0).children()->size() == 1);
     REQUIRE(p.children(0).children(0).extends("text") == "text]");
+}
+
+TEST_CASE("mixture", "[document]") {
+    gfm::Document document;
+
+    stringstream ss{R"([text\]][test \]]
+    http://www.sz.js.cn  
+    like)"};
+    auto p = document.from(ss);
 }

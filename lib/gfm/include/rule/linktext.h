@@ -5,10 +5,10 @@
 
 namespace gfm {
 namespace rule {
-class linktext : public ts::IParserRule {
+class linktext : public core {
    public:
     std::string tag() const { return "a"; }
-    bool need_paragrah() const override { return true; }
+    paragraph_t paragraph_type() const override { return paragraph_t::paragraph; }
     bool matched(bool beginl, const ts::Token &in) const override {
         auto str = in.str();
         std::transform(str.begin(), str.end(), str.begin(), ::tolower);

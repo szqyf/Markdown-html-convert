@@ -15,7 +15,7 @@ foreach (name ${core_files})
     file(APPEND ${rules_h} "#include <${name}>\n")
 endforeach ()
 
-file(APPEND ${rules_h} "\nnamespace ${project_name} { extern std::vector<std::shared_ptr<ts::IParserRule>> rules; }")
+file(APPEND ${rules_h} "\nnamespace ${project_name} { extern std::vector<std::shared_ptr<rule::core>> rules; }")
 # file(APPEND ${rules_h} "\nnamespace ${project_name} {\nclass Rules {\n\tpublic:\n\t\tvoid for_each(ts::iterator_t iterator);\n}; }")
 
 
@@ -24,9 +24,9 @@ file(APPEND ${rules_c} "#include <rules.h>\n")
 
 foreach (name ${h_files})
     file(APPEND ${rules_c} "#include <${name}>\n")
-endforeach ()
+endforeach () 
 
-file(APPEND ${rules_c} "\nnamespace ${project_name} { \n\tstd::vector<std::shared_ptr<ts::IParserRule>> rules {")
+file(APPEND ${rules_c} "\nnamespace ${project_name} { \n\tstd::vector<std::shared_ptr<rule::core>> rules {")
 
 
 foreach (name ${h_files})

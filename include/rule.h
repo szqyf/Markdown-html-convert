@@ -1,6 +1,5 @@
 #pragma once
 
-#include <functional>
 #include <istream>
 #include <string>
 #include "ast.h"
@@ -17,7 +16,6 @@ class IRule {
 
 class IParserRule : virtual public IRule {
    public:
-    virtual bool need_paragrah() const = 0;
     virtual bool matched(bool beginl, const Token &in) const = 0;
     virtual bool parse(Token &in, const ts::AstNode &parent,
                        ts::AstNode &node) const = 0;

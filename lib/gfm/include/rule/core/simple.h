@@ -1,10 +1,11 @@
 #pragma once
 #include <rule.h>
 #include <string>
+#include "core.h"
 
 namespace gfm {
 namespace rule {
-class simple : virtual public ts::IParserRule {
+class simple : public core {
    protected:
     std::string start_of_, end_of_;
     bool start_at_beginl_, stop_at_endl_;
@@ -24,7 +25,7 @@ class simple : virtual public ts::IParserRule {
         return (!start_at_beginl_ || beginl) && start(token);
     }
 
-    bool need_paragrah() const { return true; }
+    bool need_paragraph() const { return true; }
 
     bool parse(ts::Token& in, const ts::AstNode& p,
                ts::AstNode& node) const override {
