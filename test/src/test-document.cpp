@@ -67,20 +67,45 @@ TEST_CASE("token class", "[document]") {
     REQUIRE(token.str().empty());
 }
 
+TEST_CASE("escaped token", "[document]") {
+    stringstream ss{"\\ht\\tp:\\//来测试下！ \\  \t\\\n1."};
+    Token token{ss};
+
+    token.read();
+    REQUIRE(token.token() == token_t::word);
+    REQUIRE(token.str() == "\\ht");
+
+    token.read();
+    REQUIRE(token.token() == token_t::word);
+    REQUIRE(token.str() == "\\tp");
+
+    token.read();
+    REQUIRE(token.token() == token_t::punctation);
+    REQUIRE(token.str() == ":");
+
+    token.read();
+    REQUIRE(token.token() == token_t::word);
+    REQUIRE(token.str() == "/");
+
+    token.read();
+    REQUIRE(token.token() == token_t::punctation);
+    REQUIRE(token.str() == "/");
+}
+
 TEST_CASE("document linktext", "[document]") {
     gfm::Document document;
-    stringstream ss {"http://www.sz.js.cn link"};
+    stringstream ss{"http://www.sz.js.cn link"};
     auto p = document.from(ss);
 
-    REQUIRE (p.children()->size() == 1);
-    REQUIRE (p.children(0).tag() == "p");
-    REQUIRE (p.children(0).children()->size() == 3);
+    REQUIRE(p.children()->size() == 1);
+    REQUIRE(p.children(0).tag() == "p");
+    REQUIRE(p.children(0).children()->size() == 3);
 }
 
 TEST_CASE("document text", "[document]") {
     gfm::Document document;
 
-    stringstream ss {"link\\ \\[]\\\n"};
+    stringstream ss{"link\\ \\[]\\\n"};
     auto p = document.from(ss);
 
     REQUIRE(p.children()->size() == 1);
@@ -93,5 +118,21 @@ TEST_CASE("document text", "[document]") {
     REQUIRE(p.children(3).extends("text") == "[");
     REQUIRE(p.children(4).extends("text") == "]");
     REQUIRE(p.children(5).extends("text") == "\\");
-    REQUIRE(p.children(6).extends("text") == "\n");    
+    REQUIRE(p.children(6).extends("text") == "\n");
+}
+
+TEST_CASE("img", "[document]") {
+    gfm::Document document;
+
+    stringstream ss{R"(![text\]](icon\ .jpg))"};
+    auto p = document.from(ss);
+
+    REQUIRE(p.children()->size() == 1);
+
+    p = p.children()->at(0);
+
+    REQUIRE(p.children()->size() == 1);
+    REQUIRE(p.children(0).tag() == "img");
+    REQUIRE(p.children(0).extends("alt") == "text]");
+    REQUIRE(p.children(0).extends("src") == "icon\\ .jpg");
 }

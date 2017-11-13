@@ -1,4 +1,5 @@
 #include <rule.h>
+#include <utils.h>
 
 namespace gfm {
 namespace rule {
@@ -11,18 +12,7 @@ class text : public ts::IParserRule {
     }
     bool parse(ts::Token &in, const ts::AstNode &parent,
                ts::AstNode &node) const override {
-        if (in.str() == "\\") {  //转义
-            in.read();
-            auto token = in.token();
-
-            if (token == ts::token_t::word || token == ts::token_t::punctation)
-                node.extends("text", in.str());
-            else {
-                node.extends("text", "\\");
-                in.skip(-1);
-            }
-        } else
-            node.extends("text", in.str());
+        node.extends("text", in.str());
 
         in.read();
 

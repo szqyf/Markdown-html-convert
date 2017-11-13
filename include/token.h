@@ -16,24 +16,32 @@ class Token {
     void pop_env();
     void clear_env();
     void skip(size_t step);
+    std::string trunc(size_t size);
 
    public:
     const token_t token() const;
     const std::string str() const;
 
+    bool enable_escaped() const { return enable_escaped_; }
+    void enable_escaped(bool value) { enable_escaped_ = value; }
+    char escaped_char() const { return escaped_ch_; }
+    void escaped_char(char ch) { escaped_ch_ = ch; }
+
    private:
-    // struct _bag_t {
-    //     token_t token;
-    //     std::string str;
-    //     _bag_t(token_t t, std::string s) : token(t), str(s) {}
-    // };
     std::vector<std::tuple<token_t, std::string>> stack_;
     std::istream in_;
     size_t cur_, saved_;
     readed_t readed_;
+    bool enable_escaped_;
+    char escaped_ch_;
 
    public:
     Token(std::istream &in, readed_t readed = nullptr)
-        : in_(in.rdbuf()), cur_(0), saved_(-1), readed_(readed) {}
+        : in_(in.rdbuf()),
+          cur_(0),
+          saved_(-1),
+          readed_(readed),
+          enable_escaped_(true),
+          escaped_ch_('\\') {}
 };
 }  // namespace ts
