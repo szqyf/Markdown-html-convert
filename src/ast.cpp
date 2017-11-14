@@ -47,4 +47,13 @@ p_ast_t Ast::remove(size_t pos) {
 
     return shared_from_this();
 }
+
+AstNode &AstNode::children(std::string tag, std::string text) {
+    return children_->add(tag, text);
 }
+
+AstNode &AstNode::children(std::string tag, extend_t _extends) {
+    return children_->add(tag, _extends);
+}
+
+}  // namespace ts

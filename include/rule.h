@@ -17,8 +17,7 @@ class IRule {
 class IParserRule : virtual public IRule {
    public:
     virtual bool matched(bool beginl, const Token &in) const = 0;
-    virtual bool parse(Token &in, const ts::AstNode &parent,
-                       ts::AstNode &node) const = 0;
+    virtual bool parse(Token &in, ts::AstNode &parent) const = 0;
 
    public:
     virtual ~IParserRule() = default;

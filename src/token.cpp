@@ -19,17 +19,16 @@ inline token_t get_token_by_char(char c) {
     return token_t::end;
 }
 
-void Token::push_env() { saved_ = stack_.size(); }
+void Token::push_env() { env_.push_back(stack_.size()); }
 
 void Token::pop_env() {
-    if (saved_ != -1) cur_ = saved_;
-    saved_ = -1;
+    if (env_.size() > 0) {
+        cur_ = env_.back();
+        clean_env();
+    }
 }
 
-void Token::clear_env() {
-    // cur_ = stack_.size();
-    saved_ = -1;
-}
+void Token::clean_env() { env_.pop_back(); }
 
 void Token::unread() {
     cur_--;

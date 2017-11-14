@@ -5,7 +5,7 @@
 
 namespace gfm {
 namespace rule {
-class simple : public core {
+class simple : public ts::IParserRule {
    protected:
     std::string start_of_, end_of_;
     bool start_at_beginl_, stop_at_endl_;
@@ -27,9 +27,9 @@ class simple : public core {
 
     bool need_paragraph() const { return true; }
 
-    bool parse(ts::Token& in, const ts::AstNode& p,
-               ts::AstNode& node) const override {
+    bool parse(ts::Token& in, ts::AstNode& p) const override {
         std::string text;
+        ts::AstNode node{tag()};
 
         if (add_start_) text = in.str();
 
@@ -40,7 +40,7 @@ class simple : public core {
             text += in.str();
         }
 
-        node.children()->add("text", text);
+        node.children("text", text);
 
         if (!post_parse(node)) return false;
 

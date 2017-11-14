@@ -15,7 +15,7 @@ class Token {
     void unread();
     void push_env();
     void pop_env();
-    void clear_env();
+    void clean_env();
 
    public:
     const token_t token() const;
@@ -31,8 +31,9 @@ class Token {
 
    private:
     std::vector<std::tuple<token_t, std::string>> stack_;
+    std::vector<size_t> env_;
     std::istream in_;
-    size_t cur_, saved_;
+    size_t cur_;
     readed_t readed_;
     bool enable_escaped_;
     char escaped_ch_;
@@ -41,7 +42,6 @@ class Token {
     Token(std::istream &in, readed_t readed = nullptr)
         : in_(in.rdbuf()),
           cur_(0),
-          saved_(-1),
           readed_(readed),
           enable_escaped_(true),
           escaped_ch_('\\') {}

@@ -1,7 +1,30 @@
+#include <rules.h>
 #include <utils.h>
 
 using namespace ts;
 namespace gfm {
+bool parse(bool beginl, ts::Token &in, ts::AstNode &parent, bool except_p) {
+    bool r = true;
+    for (auto &rule : rules) {
+        if (except_p && rule->tag() == "p") continue;
+
+        if (rule->matched(beginl, in)) {
+            in.push_env();
+
+            r = rule->parse(in, parent);
+
+            if (r)
+                in.clean_env();
+            else
+                in.pop_env();
+        }
+
+        beginl = in.token() == ts::token_t::endl;
+    }
+
+    return r;
+}
+
 bool parse_link(ts::Token &in, std::string &alt, std::string &href,
                 std::string &title, bool &is_ref) {
     is_ref = false;

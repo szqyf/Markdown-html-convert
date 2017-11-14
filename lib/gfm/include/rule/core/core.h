@@ -3,7 +3,7 @@
 
 namespace gfm {
 namespace rule {
-enum class paragraph_t { new_paragraph, paragraph, anyway };
+enum class paragraph_t { out_paragraph, in_paragraph, anyway };
 
 class core : public ts::IParserRule {
    public:

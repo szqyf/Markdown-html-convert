@@ -10,15 +10,18 @@ namespace rule {
 class Br : public core {
    public:
     std::string tag() const override { return "br"; }
-    paragraph_t paragraph_type() const override { return paragraph_t::anyway; }
+    paragraph_t paragraph_type() const { return paragraph_t::in_paragraph; }
     bool matched(bool beginl, const ts::Token &in) const override {
         return in.token() == ts::token_t::blank && in.str().size() >= 2;
     }
-    bool parse(ts::Token &in, const ts::AstNode &parent,
-               ts::AstNode &node) const override {
-        in.read();
-        bool r = (in.token() == ts::token_t::endl);
-        in.unread();
+    bool parse(ts::Token &in, ts::AstNode &parent) const override {
+        bool r = true;
+
+        if (parent.tag() == "p") {
+            in.read();
+            r = (in.token() == ts::token_t::endl);
+            in.unread();
+        }
         return r;
     }
 };

@@ -1,4 +1,4 @@
-﻿#include <document.h>
+﻿#include <gfm_parser.h>
 #include <token.h>
 #include <catch.hpp>
 #include <sstream>
@@ -27,6 +27,24 @@ TEST_CASE("token class", "[document]") {
     token.read();
     REQUIRE(token.token() == token_t::word);
     REQUIRE(token.str() == "来测试下！");
+
+    token.push_env();
+    token.read();
+    REQUIRE(token.token() == token_t::blank);
+    REQUIRE(token.str() == "   \t");
+
+    token.read();
+    REQUIRE(token.token() == token_t::endl);
+    REQUIRE(token.str() == "\n");
+
+    token.pop_env();
+    token.read();
+    REQUIRE(token.token() == token_t::blank);
+    REQUIRE(token.str() == "   \t");
+
+    token.read();
+    REQUIRE(token.token() == token_t::endl);
+    REQUIRE(token.str() == "\n");
 
     token.pop_env();
     token.read();
@@ -93,7 +111,7 @@ TEST_CASE("escaped token", "[document]") {
 }
 
 TEST_CASE("document linktext", "[document]") {
-    gfm::Document document;
+    gfm::Parser document;
     stringstream ss{"http://www.sz.js.cn link"};
     auto p = document.from(ss);
 
@@ -106,7 +124,7 @@ TEST_CASE("document linktext", "[document]") {
 }
 
 TEST_CASE("document text", "[document]") {
-    gfm::Document document;
+    gfm::Parser document;
 
     stringstream ss{"link\\ \\[]\\\nhelper  \n         good"};
     auto p = document.from(ss);
@@ -130,7 +148,7 @@ TEST_CASE("document text", "[document]") {
 }
 
 TEST_CASE("img", "[document]") {
-    gfm::Document document;
+    gfm::Parser document;
 
     stringstream ss{R"(![text\]](icon\ .jpg "Hello world\"list"))"};
     auto p = document.from(ss);
@@ -147,7 +165,7 @@ TEST_CASE("img", "[document]") {
 }
 
 TEST_CASE("img ref", "[document]") {
-    gfm::Document document;
+    gfm::Parser document;
 
     stringstream ss{R"(![text\]][test \]])"};
     auto p = document.from(ss);
@@ -164,7 +182,7 @@ TEST_CASE("img ref", "[document]") {
 }
 
 TEST_CASE("link", "[document]") {
-    gfm::Document document;
+    gfm::Parser document;
 
     stringstream ss{R"([text\]](icon\ .jpg "Hello world\"list"))"};
     auto p = document.from(ss);
@@ -182,7 +200,7 @@ TEST_CASE("link", "[document]") {
 }
 
 TEST_CASE("link ref", "[document]") {
-    gfm::Document document;
+    gfm::Parser document;
 
     stringstream ss{R"([text\]][test \]])"};
     auto p = document.from(ss);
@@ -200,7 +218,7 @@ TEST_CASE("link ref", "[document]") {
 }
 
 TEST_CASE("mixture", "[document]") {
-    gfm::Document document;
+    gfm::Parser document;
 
     stringstream ss{R"([text\]][test \]]
     http://www.sz.js.cn  

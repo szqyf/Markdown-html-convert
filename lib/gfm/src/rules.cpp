@@ -1,5 +1,4 @@
-//该文件为自动生成，请勿自行修改
-#include <rules.h>
+﻿//该文件为自动生成，请勿自行修改
 #include <rule/AtxHeading.h>
 #include <rule/Blank.h>
 #include <rule/Blockquote.h>
@@ -11,27 +10,24 @@
 #include <rule/HtmlRaw.h>
 #include <rule/Img.h>
 #include <rule/Link.h>
-#include <rule/linktext.h>
+#include <rule/Paragraph.h>
 #include <rule/SetxHeading.h>
 #include <rule/Strong.h>
+#include <rule/linktext.h>
 #include <rule/text.h>
+#include <rules.h>
 
-namespace gfm { 
-	std::vector<std::shared_ptr<rule::core>> rules {
-		std::make_shared<rule::AtxHeading>(),
-		std::make_shared<rule::Blank>(),
-		std::make_shared<rule::Blockquote>(),
-		std::make_shared<rule::Br>(),
-		std::make_shared<rule::Bullet>(),
-		std::make_shared<rule::Codeblock>(),
-		std::make_shared<rule::Em>(),
-		std::make_shared<rule::HtmlEscape>(),
-		std::make_shared<rule::HtmlRaw>(),
-		std::make_shared<rule::Img>(),
-		std::make_shared<rule::Link>(),
-		std::make_shared<rule::linktext>(),
-		std::make_shared<rule::SetxHeading>(),
-		std::make_shared<rule::Strong>(),
-		std::make_shared<rule::text>(),
-	};
+using namespace gfm::rule;
+
+namespace gfm {
+std::vector<std::shared_ptr<core>> rules{
+    std::make_shared<Blank>(),      std::make_shared<Blockquote>(),
+    std::make_shared<AtxHeading>(), std::make_shared<SetxHeading>(),
+    std::make_shared<Bullet>(),     std::make_shared<Codeblock>(),
+    std::make_shared<Paragraph>(),  std::make_shared<Em>(),
+    std::make_shared<Strong>(),     std::make_shared<Br>(),
+    std::make_shared<HtmlEscape>(), std::make_shared<HtmlRaw>(),
+    std::make_shared<Img>(),        std::make_shared<Link>(),
+    std::make_shared<linktext>(),   std::make_shared<text>(),
+};
 }

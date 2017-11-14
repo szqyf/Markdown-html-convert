@@ -78,6 +78,8 @@ class AstNode {
     Ast &children_r() const { return *children_; }
     Ast &children_r() { return *children_; }
     const AstNode &children(size_t pos) const { return children_->at(pos); }
+    AstNode &children(std::string tag, std::string text);
+    AstNode &children(std::string tag, extend_t _extends);
 
    public:
     const nodes_t::const_iterator begin() { return children_->begin(); }

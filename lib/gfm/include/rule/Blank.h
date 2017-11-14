@@ -1,4 +1,4 @@
-#include <rule.h>
+﻿#include <rule.h>
 #include <utils.h>
 
 namespace gfm {
@@ -10,12 +10,11 @@ namespace rule {
 class Blank : public core {
    public:
     std::string tag() const override { return ""; }
-    paragraph_t paragraph_type() const override { return paragraph_t::anyway; }
+    paragraph_t paragraph_type() const { return paragraph_t::anyway; }
     bool matched(bool beginl, const ts::Token &in) const override {
         return beginl && in.token() == ts::token_t::blank;
     }
-    bool parse(ts::Token &in, const ts::AstNode &parent,
-               ts::AstNode &node) const override {
+    bool parse(ts::Token &in, ts::AstNode &parent) const override {
         bool r = false;
         if (parent.tag() == "p") return true;
         if (in.str().size() < 4) return true;
