@@ -1,44 +1,43 @@
 #include <utils.h>
 
 using namespace ts;
-namespace html {
-bool parse_link(ts::Token &in, std::string &alt, std::string &href,
-                std::string &title, bool &is_ref) {
-    is_ref = false;
-    alt = "";
-    href = "";
-    title = "";
+namespace html
+{
+std::string encodeString(const std::string &src, int encodingFlags)
+{
 
-    if (!in.has_puncation("[")) return false;
+    bool amps = (encodingFlags & cAmps) != 0,
+         doubleAmps = (encodingFlags & cDoubleAmps) != 0,
+         angleBrackets = (encodingFlags & cAngles) != 0,
+         quotes = (encodingFlags & cQuotes) != 0;
+    std::string tgt;
 
-    while (in.read() && !in.has_puncation("]"))  // get alt
-        alt += in.str();
-
-    in.read();
-    if (!in.has_puncation("(") && !in.has_puncation("[")) return false;
-
-    if (in.str() == "(")
-        while (in.read() && !in.has_puncation(")")) {
-            if (in.token() == token_t::endl)
-                return false;
-            else if (in.has_puncation("\"")) {
-                while (in.read() && !in.has_puncation("\""))
-                    if (in.token() == token_t::endl)
-                        return false;
-                    else
-                        title += in.str();
-            } else if (in.token() != token_t::blank)
-                href += in.str();
-        }
-    else if (in.str() == "[") {
-        is_ref = true;
-        while (in.read() && !in.has_puncation("]"))
-            if (in.token() == token_t::endl)
-                return false;
+    for (std::string::const_iterator i = src.begin(), ie = src.end(); i != ie; ++i)
+    {
+        if (*i == '&' && amps)
+        {
+            static const boost::regex cIgnore("^(&amp;)|(&#[0-9]{1,3};)|(&#[xX][0-9a-fA-F]{1,2};)");
+            if (boost::regex_search(i, ie, cIgnore))
+            {
+                tgt.push_back(*i);
+            }
             else
-                href += in.str();
+            {
+                tgt += "&amp;";
+            }
+        }
+        else if (*i == '&' && doubleAmps)
+            tgt += "&amp;";
+        else if (*i == '<' && angleBrackets)
+            tgt += "&lt;";
+        else if (*i == '>' && angleBrackets)
+            tgt += "&gt;";
+        else if (*i == '\"' && quotes)
+            tgt += "&quot;";
+        else
+            tgt.push_back(*i);
     }
 
-    return true;
+    return tgt;
 }
-}  // namespace gfm
+} // namespace gfm
