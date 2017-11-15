@@ -3,7 +3,7 @@
 #include <parser.h>
 
 namespace gfm {
-class Document : public ts::IParser {
+class Parser : public ts::IParser {
    public:
     const ts::AstNode &from(std::istream &in) override;
 
@@ -15,6 +15,6 @@ class Document : public ts::IParser {
     ts::AstNode document_;
 
    public:
-    Document();
+    Parser();
 };
 }  // namespace gfm

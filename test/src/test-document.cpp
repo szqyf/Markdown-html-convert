@@ -1,4 +1,4 @@
-﻿#include <document.h>
+﻿#include <gfm_parser.h>
 #include <token.h>
 #include <catch.hpp>
 #include <sstream>
@@ -27,6 +27,24 @@ TEST_CASE("token class", "[document]") {
     token.read();
     REQUIRE(token.token() == token_t::word);
     REQUIRE(token.str() == "来测试下！");
+
+    token.push_env();
+    token.read();
+    REQUIRE(token.token() == token_t::blank);
+    REQUIRE(token.str() == "   \t");
+
+    token.read();
+    REQUIRE(token.token() == token_t::endl);
+    REQUIRE(token.str() == "\n");
+
+    token.pop_env();
+    token.read();
+    REQUIRE(token.token() == token_t::blank);
+    REQUIRE(token.str() == "   \t");
+
+    token.read();
+    REQUIRE(token.token() == token_t::endl);
+    REQUIRE(token.str() == "\n");
 
     token.pop_env();
     token.read();
@@ -93,7 +111,7 @@ TEST_CASE("escaped token", "[document]") {
 }
 
 TEST_CASE("document linktext", "[document]") {
-    gfm::Document document;
+    gfm::Parser document;
     stringstream ss{"http://www.sz.js.cn link"};
     auto p = document.from(ss);
 
@@ -106,24 +124,31 @@ TEST_CASE("document linktext", "[document]") {
 }
 
 TEST_CASE("document text", "[document]") {
-    gfm::Document document;
+    gfm::Parser document;
 
-    stringstream ss{"link\\ \\[]\\\n"};
+    stringstream ss{"link\\ \\[]\\\nhelper  \n         good"};
     auto p = document.from(ss);
 
-    REQUIRE(p.children()->size() == 1);
-    REQUIRE(p.children()->at(0).children()->size() == 5);
+    REQUIRE(p.children()->size() == 2);
+    REQUIRE(p.children(0).children()->size() == 4);
+    REQUIRE(p.children(1).children()->size() == 4);
 
-    p = p.children()->at(0);
-    REQUIRE(p.children(0).extends("text") == "link");
-    REQUIRE(p.children(1).extends("text") == "\\ ");
-    REQUIRE(p.children(2).extends("text") == "[");
-    REQUIRE(p.children(3).extends("text") == "]");
-    REQUIRE(p.children(4).extends("text") == "\n\n");
+    auto x = p.children()->at(0);
+    REQUIRE(x.children(0).extends("text") == "link");
+    REQUIRE(x.children(1).extends("text") == "\\ ");
+    REQUIRE(x.children(2).extends("text") == "[");
+    REQUIRE(x.children(3).extends("text") == "]");
+
+    auto y = p.children(1);
+
+    REQUIRE(y.children(0).extends("text") == "helper");
+    REQUIRE(y.children(1).tag() == "br");
+    REQUIRE(y.children(2).extends("text") == "\n");
+    REQUIRE(y.children(3).extends("text") == "good");
 }
 
 TEST_CASE("img", "[document]") {
-    gfm::Document document;
+    gfm::Parser document;
 
     stringstream ss{R"(![text\]](icon\ .jpg "Hello world\"list"))"};
     auto p = document.from(ss);
@@ -140,7 +165,7 @@ TEST_CASE("img", "[document]") {
 }
 
 TEST_CASE("img ref", "[document]") {
-    gfm::Document document;
+    gfm::Parser document;
 
     stringstream ss{R"(![text\]][test \]])"};
     auto p = document.from(ss);
@@ -157,7 +182,7 @@ TEST_CASE("img ref", "[document]") {
 }
 
 TEST_CASE("link", "[document]") {
-    gfm::Document document;
+    gfm::Parser document;
 
     stringstream ss{R"([text\]](icon\ .jpg "Hello world\"list"))"};
     auto p = document.from(ss);
@@ -175,7 +200,7 @@ TEST_CASE("link", "[document]") {
 }
 
 TEST_CASE("link ref", "[document]") {
-    gfm::Document document;
+    gfm::Parser document;
 
     stringstream ss{R"([text\]][test \]])"};
     auto p = document.from(ss);
@@ -190,4 +215,49 @@ TEST_CASE("link ref", "[document]") {
     REQUIRE(p.children(0).extends("is_ref") == "true");
     REQUIRE(p.children(0).children()->size() == 1);
     REQUIRE(p.children(0).children(0).extends("text") == "text]");
+}
+
+TEST_CASE("atxheading", "[document]") {
+    gfm::Parser document;
+
+    stringstream ss{R"(  # Hello ###hello
+    http://www.sz.js.cn)"};
+    auto p = document.from(ss);
+
+    REQUIRE(p.size() == 2);
+    REQUIRE(p.children(0).tag() == "h");
+    REQUIRE(p.children(0).extends("level") == "1");
+    REQUIRE(p.children(0).children(0).extends("text") == "Hello");
+    REQUIRE(p.children(0).children(1).extends("text") == " ");
+    REQUIRE(p.children(0).children(2).extends("text") == "###");
+    REQUIRE(p.children(0).children(3).extends("text") == "hello");
+
+    auto y = p.children(1);
+    REQUIRE(y.tag() == "p");
+    REQUIRE(y.size() == 1);
+
+    auto z = y.children(0);
+    REQUIRE(z.tag() == "a");
+    REQUIRE(z.extends("href") == "http://www.sz.js.cn");
+    REQUIRE(z.children(0).extends("text") == "http://www.sz.js.cn");
+}
+
+TEST_CASE("codeblock", "[document]") {
+    gfm::Parser document;
+
+    stringstream ss{R"(# hh
+```javascript
+function helper() {
+    print("http://www.sz.js.cn")```\h
+}    
+   ```)"};
+    auto p = document.from(ss);
+    auto x = p.children(1);
+
+    REQUIRE(p.size() == 2);
+    REQUIRE(x.tag() == "code");
+    REQUIRE(x.extends("lang") == "javascript");
+    REQUIRE(x.children(0).extends("text") == R"(function helper() {
+    print("http://www.sz.js.cn")```\h
+}    )");
 }

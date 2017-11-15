@@ -2,18 +2,15 @@
 
 namespace gfm {
 namespace rule {
-class Em : public ts::IParserRule {
+class Em : public core {
    public:
     std::string tag() const override { return "em"; }
-
-    bool need_paragrah() const override { return true; }
-
+    paragraph_t paragraph_type() const { return paragraph_t::in_paragraph; }
     bool matched(bool beginl, const ts::Token &in) const override {
         return in.str() == "*" || in.str() == "_";
     }
-
-    bool parse(ts::Token &in, const ts::AstNode &p, ts::AstNode &node) const override {
-        return true;
+    ts::result_t parse(ts::Token &in, ts::AstNode &parent) const override {
+        return ts::result_t::ok;
     }
 };
 }  // namespace rule
