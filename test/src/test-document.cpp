@@ -220,11 +220,44 @@ TEST_CASE("link ref", "[document]") {
 TEST_CASE("atxheading", "[document]") {
     gfm::Parser document;
 
-    stringstream ss{R"(  # Hello)"};
+    stringstream ss{R"(  # Hello ###hello
+    http://www.sz.js.cn)"};
     auto p = document.from(ss);
 
-    REQUIRE (p.size() == 1);
+    REQUIRE(p.size() == 2);
     REQUIRE(p.children(0).tag() == "h");
     REQUIRE(p.children(0).extends("level") == "1");
     REQUIRE(p.children(0).children(0).extends("text") == "Hello");
+    REQUIRE(p.children(0).children(1).extends("text") == " ");
+    REQUIRE(p.children(0).children(2).extends("text") == "###");
+    REQUIRE(p.children(0).children(3).extends("text") == "hello");
+
+    auto y = p.children(1);
+    REQUIRE(y.tag() == "p");
+    REQUIRE(y.size() == 1);
+
+    auto z = y.children(0);
+    REQUIRE(z.tag() == "a");
+    REQUIRE(z.extends("href") == "http://www.sz.js.cn");
+    REQUIRE(z.children(0).extends("text") == "http://www.sz.js.cn");
+}
+
+TEST_CASE("codeblock", "[document]") {
+    gfm::Parser document;
+
+    stringstream ss{R"(# hh
+```javascript
+function helper() {
+    print("http://www.sz.js.cn")```\h
+}    
+   ```)"};
+    auto p = document.from(ss);
+    auto x = p.children(1);
+
+    REQUIRE(p.size() == 2);
+    REQUIRE(x.tag() == "code");
+    REQUIRE(x.extends("lang") == "javascript");
+    REQUIRE(x.children(0).extends("text") == R"(function helper() {
+    print("http://www.sz.js.cn")```\h
+}    )");
 }
