@@ -1,4 +1,4 @@
-#include <document.h>
+#include <gfm_parser.h>
 #include <html_render.h>
 #include <catch.hpp>
 #include <iostream>
@@ -7,9 +7,9 @@
 using namespace std;
 
 TEST_CASE("basic render", "[render]") {
-    gfm::Document document;
+    gfm::Parser document;
 
-    stringstream ss{R"(![text\]](icon\ .jpg "Hello world\"list"))"};
+    stringstream ss{R"([text\]](icon\ .jpg "Hello world\"list"))"};
     auto p = document.from(ss);
 
     html::Render render;

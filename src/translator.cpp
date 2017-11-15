@@ -5,7 +5,7 @@
 #include "html/module.h"
 
 namespace ts {
-static std::shared_ptr<IRender>* defaultRender{nullptr};
+static std::shared_ptr<IRender> defaultRender{nullptr};
 
 std::shared_ptr<IParser> make_parser(std::string what) {
     if (gfm::match(what) && gfm::has_parser()) return gfm::make_parser();
@@ -22,11 +22,11 @@ std::shared_ptr<IRender> make_render(std::string what) {
 }
 
 void set_default_render(std::shared_ptr<IRender> render) {
-    if (render != nullptr) defaultRender = &render;
+    if (render != nullptr) defaultRender = render;
 }
 
-std::ostream& operator<<(std::ostream& out, AstNode node) {
-    if (defaultRender != nullptr) out << (*defaultRender)->render(node);
+std::ostream& operator<<(std::ostream& out, const AstNode &node) {
+    if (defaultRender != nullptr) out << defaultRender->render(node);
     return out;
 }
 
@@ -40,4 +40,4 @@ std::ostream& operator<<(std::ostream& out, std::shared_ptr<IParser> parser) {
 
     return out;
 }
-}
+} 

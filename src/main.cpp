@@ -13,5 +13,6 @@ int main() {
     {  //全部读取并输出
         in >> gfm;
         out << gfm;
+        // out << html->render(gfm->document());
     }
 }

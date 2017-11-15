@@ -1,10 +1,9 @@
-﻿#pragma once
+#pragma once
 #include <rule.h>
-#include "core/core.h"
 
 namespace gfm {
 namespace rule {
-class AtxHeading : public core {
+class SetxHeading : public core {
    public:
     std::string tag() const override { return "h"; }
     paragraph_t paragraph_type() const { return paragraph_t::out_paragraph; }
@@ -12,7 +11,9 @@ class AtxHeading : public core {
         return beginl && in.token() == ts::token_t::punctation &&
                in.str().front() == '#' && in.str().size() <= 6;
     }
-    ts::result_t parse(ts::Token &in, ts::AstNode &parent) const override;
+    ts::result_t parse(ts::Token &in, ts::AstNode &parent) const override {
+        return ts::result_t::ok;
+    }
 };
 }  // namespace rule
 }  // namespace gfm
