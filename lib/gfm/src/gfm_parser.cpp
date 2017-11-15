@@ -28,46 +28,50 @@ const AstNode &Parser::from(std::istream &in) {
                  }};
 
     while (reader.read()) {
-        token_t token = reader.token();
-        std::string buf = reader.str();
+        auto r = parse(fol, reader, document_);
 
-        if (token == token_t::endl &&
-            std::count(buf.begin(), buf.end(), '\n') >= 2) {
-            parent = document_.children()->add("p");
-            fol = true;
-            continue;
-        }
-
-        parse(fol, reader, document_);
-
-        // for (auto &rule : rules) {
-        //     if (rule->matched(fol, reader)) {
-        //         // ts::AstNode node{rule->tag()};
-
-        //         // if (rule->paragraph_type() == rule::paragraph_t::paragraph &&
-        //         //     parent.tag() != "p")
-        //         //     parent = document_.children()->add("p");
-        //         // else if (rule->paragraph_type() ==
-        //         //              rule::paragraph_t::new_paragraph &&
-        //         //          parent.tag() == "p") {
-        //         //     if (parent.children()->size() == 0)
-        //         //         document_.children()->remove(parent);
-        //         //     parent = document_;
-        //         // }
-
-        //         reader.push_env();
-        //         if (!rule->parse(reader, parent)) {
-        //             reader.pop_env();
-        //             continue;
-        //         } else {
-        //             // if (!rule->tag().empty()) parent.children()->add(node);
-        //             break;
-        //         }
-        //     }
-        // }
-
-        // fol = reader.token() == token_t::endl;
+        fol = (r == ts::result_t::skip ? fol
+                                       : reader.token() == ts::token_t::endl);
     }
+    // token_t token = reader.token();
+    // std::string buf = reader.str();
+
+    // if (token == token_t::endl &&
+    //     std::count(buf.begin(), buf.end(), '\n') >= 2) {
+    //     parent = document_.children("p", "");
+    //     fol = true;
+    //     continue;
+    // }
+
+    // for (auto &rule : rules) {
+    //     if (rule->matched(fol, reader)) {
+    //         // ts::AstNode node{rule->tag()};
+
+    //         // if (rule->paragraph_type() == rule::paragraph_t::paragraph
+    //         &&
+    //         //     parent.tag() != "p")
+    //         //     parent = document_.children()->add("p");
+    //         // else if (rule->paragraph_type() ==
+    //         //              rule::paragraph_t::new_paragraph &&
+    //         //          parent.tag() == "p") {
+    //         //     if (parent.children()->size() == 0)
+    //         //         document_.children()->remove(parent);
+    //         //     parent = document_;
+    //         // }
+
+    //         reader.push_env();
+    //         if (!rule->parse(reader, parent)) {
+    //             reader.pop_env();
+    //             continue;
+    //         } else {
+    //             // if (!rule->tag().empty())
+    //             parent.children()->add(node); break;
+    //         }
+    //     }
+    // }
+
+    // fol = reader.token() == token_t::endl;
+    // }
 
     return document_;
 }

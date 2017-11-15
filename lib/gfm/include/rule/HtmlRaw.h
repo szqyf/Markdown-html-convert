@@ -11,8 +11,8 @@ class HtmlRaw : public core {
         return beginl && in.token() == ts::token_t::punctation &&
                in.str().front() == '#' && in.str().size() <= 6;
     }
-    bool parse(ts::Token &in, ts::AstNode &parent) const override {
-        return true;
+    ts::result_t parse(ts::Token &in, ts::AstNode &parent) const override {
+        return ts::result_t::ok;
     }
 };
 }  // namespace rule

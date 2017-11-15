@@ -9,8 +9,8 @@ class Em : public core {
     bool matched(bool beginl, const ts::Token &in) const override {
         return in.str() == "*" || in.str() == "_";
     }
-    bool parse(ts::Token &in, ts::AstNode &parent) const override {
-        return true;
+    ts::result_t parse(ts::Token &in, ts::AstNode &parent) const override {
+        return ts::result_t::ok;
     }
 };
 }  // namespace rule

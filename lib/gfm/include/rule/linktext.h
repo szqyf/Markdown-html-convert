@@ -16,7 +16,7 @@ class linktext : public core {
         return str == "http" || str == "https" || str == "ftp" ||
                str == "mailto";
     }
-    bool parse(ts::Token &in, ts::AstNode &parent) const override {
+    ts::result_t parse(ts::Token &in, ts::AstNode &parent) const override {
         std::string text;
         do {
             text += in.str();
@@ -26,7 +26,7 @@ class linktext : public core {
 
         in.unread();
 
-        return true;
+        return ts::result_t::ok;
     }
 };
 }  // namespace rule

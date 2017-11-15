@@ -3,23 +3,32 @@
 
 using namespace ts;
 namespace gfm {
-bool parse(bool beginl, ts::Token &in, ts::AstNode &parent, bool except_p) {
-    bool r = true;
+result_t parse(bool beginl, ts::Token &in, ts::AstNode &parent, bool except_p) {
+    result_t r = result_t::failure;
     for (auto &rule : rules) {
         if (except_p && rule->tag() == "p") continue;
 
         if (rule->matched(beginl, in)) {
+            if (rule->paragraph_type() == rule::paragraph_t::out_paragraph &&
+                except_p) {
+                r = result_t::jumpout;
+                break;
+            }
+
             in.push_env();
 
             r = rule->parse(in, parent);
 
-            if (r)
-                in.clean_env();
-            else
+            if (r == result_t::failure)
                 in.pop_env();
+            else if (r == result_t::jumpout) {
+                in.pop_env();
+                break;
+            } else {
+                in.clean_env();
+                break;
+            }
         }
-
-        beginl = in.token() == ts::token_t::endl;
     }
 
     return r;

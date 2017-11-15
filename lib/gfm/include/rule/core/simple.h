@@ -27,9 +27,9 @@ class simple : public ts::IParserRule {
 
     bool need_paragraph() const { return true; }
 
-    bool parse(ts::Token& in, ts::AstNode& p) const override {
+    ts::result_t parse(ts::Token& in, ts::AstNode& p) const override {
         std::string text;
-        ts::AstNode node{tag()};
+        ts::AstNode node{&p, tag()};
 
         if (add_start_) text = in.str();
 
@@ -42,9 +42,9 @@ class simple : public ts::IParserRule {
 
         node.children("text", text);
 
-        if (!post_parse(node)) return false;
+        if (!post_parse(node)) return ts::result_t::failure;
 
-        return true;
+        return ts::result_t::ok;;
     }
 
    public:

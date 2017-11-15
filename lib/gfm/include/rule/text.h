@@ -10,10 +10,10 @@ class text : public core {
     bool matched(bool beginl, const ts::Token &in) const override {
         return true;
     }
-    bool parse(ts::Token &in, ts::AstNode &parent) const override {
+    ts::result_t parse(ts::Token &in, ts::AstNode &parent) const override {
         parent.children("text", in.str());
 
-        return true;
+        return ts::result_t::ok;
     }
 };
 }  // namespace rule

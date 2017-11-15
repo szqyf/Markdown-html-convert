@@ -12,7 +12,7 @@ class Link : public core {
         return in.has_puncation("[");
     }
 
-    bool parse(ts::Token &in, ts::AstNode &parent) const override;
+    ts::result_t parse(ts::Token &in, ts::AstNode &parent) const override;
 };
 }  // namespace rule
 }  // namespace gfm

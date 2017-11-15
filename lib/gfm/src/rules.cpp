@@ -28,6 +28,6 @@ std::vector<std::shared_ptr<core>> rules{
     std::make_shared<Strong>(),     std::make_shared<Br>(),
     std::make_shared<HtmlEscape>(), std::make_shared<HtmlRaw>(),
     std::make_shared<Img>(),        std::make_shared<Link>(),
-    std::make_shared<linktext>(),   std::make_shared<text>(),
+    std::make_shared<linktext>()//,   std::make_shared<text>(),
 };
 }

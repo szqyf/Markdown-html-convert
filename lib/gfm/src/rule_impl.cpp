@@ -7,40 +7,67 @@
 
 namespace gfm {
 namespace rule {
-bool AtxHeading::parse(ts::Token &in, ts::AstNode &parent) const {
+ts::result_t AtxHeading::parse(ts::Token &in, ts::AstNode &parent) const {
     // node.extends("level", std::to_string(in.str().size()));
-    ts::AstNode node{tag(), {{"level", std::to_string(in.str().size())}}};
+    auto str = in.str();
 
     in.read();
-    if (!in.all_space()) return false;
+    if (!in.all_space()) return ts::result_t::failure;
+
     if (in.token() == ts::token_t::endl) {
         in.unread();
-        parent.children()->add(node);
-        return true;
+        parent.children(tag(), {{"level", std::to_string(str.size())}});
+        return ts::result_t::ok;
+    } else {
+        ts::AstNode node{
+            &parent, tag(), {{"level", std::to_string(str.size())}}};
+        while (true) {
+            auto r = gfm::parse(false, in, node);
+
+            if (r == ts::result_t::failure)
+                node.children("text", in.str());
+            else if (r == ts::result_t::jumpout)
+                ;
+            return ts::result_t::ok;
+
+            if (in.token() == ts::token_t::endl) break;
+        }
     }
 
-    return false;
+    return ts::result_t::ok;
 }
 
-bool Paragraph::parse(ts::Token &in, ts::AstNode &parent) const {
-    ts::AstNode node{tag()};
-    bool r = true;
+ts::result_t Paragraph::parse(ts::Token &in, ts::AstNode &parent) const {
+    ts::AstNode node{&parent, tag()};
+    ts::result_t r = ts::result_t::ok;
+    bool fol = true;
 
-    do {
-        r = gfm::parse(true, in, node, true);
+    while (true) {
+        r = gfm::parse(fol, in, node, true);
 
-        if (!r) break;
-    } while (!(in.token() == ts::token_t::endl && in.str().size() >= 2));
+        if (r == ts::result_t::failure)
+            node.children("text", in.str());
+        else if (r == ts::result_t::jumpout)
+            break;
 
-    if (node.children()->size() != 0) parent.children()->add(node);
-    return r;
+        fol = (r == ts::result_t::skip
+                   ? fol
+                   : (in.token() != ts::token_t::blank && node.size() == 0) ||
+                         in.token() == ts::token_t::endl);
+
+        if (!in.read()) break;
+        if (in.token() == ts::token_t::endl && in.str().size() >= 2) break;
+    }
+
+    if (node.size() != 0) parent.children()->emplace_back(node);
+    return ts::result_t::ok;
 }
 
-bool Link::parse(ts::Token &in, ts::AstNode &parent) const {
+ts::result_t Link::parse(ts::Token &in, ts::AstNode &parent) const {
     std::string alt, href, title;
     bool is_ref;
 
-    if (!parse_link(in, alt, href, title, is_ref)) return false;
+    if (!parse_link(in, alt, href, title, is_ref)) return ts::result_t::failure;
 
     parent
         .children(tag(), {{"href", href},
@@ -48,23 +75,23 @@ bool Link::parse(ts::Token &in, ts::AstNode &parent) const {
                           {"is_ref", is_ref ? "true" : "false"}})
         .children("text", alt);
 
-    return true;
+    return ts::result_t::ok;
 }
 
-bool Img::parse(ts::Token &in, ts::AstNode &parent) const {
+ts::result_t Img::parse(ts::Token &in, ts::AstNode &parent) const {
     in.read();
 
     std::string alt, href, title;
     bool is_ref;
 
-    if (!parse_link(in, alt, href, title, is_ref)) return false;
+    if (!parse_link(in, alt, href, title, is_ref)) return ts::result_t::failure;
 
     parent.children(tag(), {{"alt", alt},
                             {"src", href},
                             {"title", title},
                             {"is_ref", is_ref ? "true" : "false"}});
 
-    return true;
+    return ts::result_t::ok;
 }
 }  // namespace rule
 }  // namespace gfm

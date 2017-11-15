@@ -14,14 +14,16 @@ class Br : public core {
     bool matched(bool beginl, const ts::Token &in) const override {
         return in.token() == ts::token_t::blank && in.str().size() >= 2;
     }
-    bool parse(ts::Token &in, ts::AstNode &parent) const override {
-        bool r = true;
+    ts::result_t parse(ts::Token &in, ts::AstNode &parent) const override {
+        auto r = ts::result_t::failure;
 
         if (parent.tag() == "p") {
             in.read();
-            r = (in.token() == ts::token_t::endl);
+            if (in.token() == ts::token_t::endl)
+                r = ts::result_t::ok;
             in.unread();
         }
+        if (r == ts::result_t::ok) parent.children("br", "");
         return r;
     }
 };

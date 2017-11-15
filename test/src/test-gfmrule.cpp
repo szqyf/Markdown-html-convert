@@ -18,7 +18,7 @@ TEST_CASE("linktext rule", "[rules]") {
 
     tk.read();
     REQUIRE(text.matched(false, tk));
-    REQUIRE(text.parse(tk, root));
+    REQUIRE(text.parse(tk, root)== result_t::ok);
 
     // REQUIRE(tk.token() == token_t::blank);
     // REQUIRE(tk.str() == " ");

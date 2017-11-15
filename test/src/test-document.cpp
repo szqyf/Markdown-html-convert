@@ -217,11 +217,14 @@ TEST_CASE("link ref", "[document]") {
     REQUIRE(p.children(0).children(0).extends("text") == "text]");
 }
 
-TEST_CASE("mixture", "[document]") {
+TEST_CASE("atxheading", "[document]") {
     gfm::Parser document;
 
-    stringstream ss{R"([text\]][test \]]
-    http://www.sz.js.cn  
-    like)"};
+    stringstream ss{R"(  # Hello)"};
     auto p = document.from(ss);
+
+    REQUIRE (p.size() == 1);
+    REQUIRE(p.children(0).tag() == "h");
+    REQUIRE(p.children(0).extends("level") == "1");
+    REQUIRE(p.children(0).children(0).extends("text") == "Hello");
 }

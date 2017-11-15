@@ -12,7 +12,7 @@ class Img : public core {
         return in.str() == "!";
     }
 
-    bool parse(ts::Token &in, ts::AstNode &parent) const override;
+    ts::result_t parse(ts::Token &in, ts::AstNode &parent) const override;
 };
 }  // namespace rule
 }  // namespace gfm

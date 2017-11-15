@@ -12,7 +12,7 @@ class AtxHeading : public core {
         return beginl && in.token() == ts::token_t::punctation &&
                in.str().front() == '#' && in.str().size() <= 6;
     }
-    bool parse(ts::Token &in, ts::AstNode &parent) const override;
+    ts::result_t parse(ts::Token &in, ts::AstNode &parent) const override;
 };
 }  // namespace rule
 }  // namespace gfm

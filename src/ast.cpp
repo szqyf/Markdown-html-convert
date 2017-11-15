@@ -4,56 +4,57 @@
 #include <stdexcept>
 
 namespace ts {
-AstNode &Ast::add(std::string tag, std::string text) {
-    emplace_back(tag, text);
+// AstNode &Ast::add(std::string tag, std::string text) {
+//     emplace_back(tag, text);
 
-    return back();
-}
+//     return back();
+// }
 
-AstNode &Ast::add(std::string tag, extend_t _init) {
-    emplace_back(tag, _init);
+// AstNode &Ast::add(std::string tag, extend_t _init) {
+//     emplace_back(tag, _init);
 
-    return back();
-}
+//     return back();
+// }
 
-AstNode &Ast::add(const AstNode &node) {
-    push_back(node);
+// AstNode &Ast::add(const AstNode &node) {
+//     push_back(node);
 
-    return back();
-}
+//     return back();
+// }
 
-p_ast_t Ast::add(extend_t _init) {
-    for (auto &el : _init) emplace_back(el.first, el.second);
+// p_ast_t Ast::add(extend_t _init) {
+//     for (auto &el : _init) emplace_back(el.first, el.second);
 
-    return shared_from_this();
-}
+//     return shared_from_this();
+// }
 
-p_ast_t Ast::remove(const AstNode &node) {
-    nodes_t::iterator found = end();
+// p_ast_t Ast::remove(const AstNode &node) {
+//     nodes_t::iterator found = end();
 
-    for (auto i = begin(); i != end(); ++i)
-        if (*i == node) {
-            found = i;
-            break;
-        }
+//     for (auto i = begin(); i != end(); ++i)
+//         if (*i == node) {
+//             found = i;
+//             break;
+//         }
 
-    if (found != end()) erase(found);
+//     if (found != end()) erase(found);
 
-    return shared_from_this();
-}
+//     return shared_from_this();
+// }
 
-p_ast_t Ast::remove(size_t pos) {
-    if (pos < size()) erase(begin() + pos);
+// p_ast_t Ast::remove(size_t pos) {
+//     if (pos < size()) erase(begin() + pos);
 
-    return shared_from_this();
-}
+//     return shared_from_this();
+// }
 
 AstNode &AstNode::children(std::string tag, std::string text) {
-    return children_->add(tag, text);
+    children_->emplace_back(this, tag, text);
+    return children_->back();
 }
 
 AstNode &AstNode::children(std::string tag, extend_t _extends) {
-    return children_->add(tag, _extends);
+    children_->emplace_back(this, tag, _extends);
+    return children_->back();
 }
-
 }  // namespace ts

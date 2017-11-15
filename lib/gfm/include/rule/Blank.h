@@ -14,12 +14,12 @@ class Blank : public core {
     bool matched(bool beginl, const ts::Token &in) const override {
         return beginl && in.token() == ts::token_t::blank;
     }
-    bool parse(ts::Token &in, ts::AstNode &parent) const override {
-        bool r = false;
-        if (parent.tag() == "p") return true;
-        if (in.str().size() < 4) return true;
+    ts::result_t parse(ts::Token &in, ts::AstNode &parent) const override {
+        auto r = ts::result_t::failure;
+        if (parent.tag() == "p") return ts::result_t::ok;
+        if (in.str().size() < 4) return ts::result_t::skip;
         in.read();
-        r = (in.token() == ts::token_t::endl);
+        if (in.token() == ts::token_t::endl) r = ts::result_t::ok;
         in.unread();
 
         return r;
