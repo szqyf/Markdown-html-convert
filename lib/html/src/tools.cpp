@@ -1,4 +1,4 @@
-#include <utils.h>
+#include <tools.h>
 
 using namespace ts;
 namespace html
@@ -16,8 +16,8 @@ std::string encodeString(const std::string &src, int encodingFlags)
     {
         if (*i == '&' && amps)
         {
-            static const boost::regex cIgnore("^(&amp;)|(&#[0-9]{1,3};)|(&#[xX][0-9a-fA-F]{1,2};)");
-            if (boost::regex_search(i, ie, cIgnore))
+            static const std::regex cIgnore("^(&amp;)|(&#[0-9]{1,3};)|(&#[xX][0-9a-fA-F]{1,2};)");
+            if (std::regex_search(i, ie, cIgnore))
             {
                 tgt.push_back(*i);
             }
